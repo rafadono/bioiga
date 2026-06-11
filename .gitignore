@@ -54,3 +54,6 @@ optuna_*.sqlite
 # Type-checking caches
 .mypy_cache/
 .pyright/
+
+# Thesis PDF
+Optimizacion-topologica-en-placas-cuadradas-y-comparacion-entre-algoritmos-de-optimizacion-MPGA-y-MBPSO-aplicados-a-metodos-IGA-y-FEA.pdf
