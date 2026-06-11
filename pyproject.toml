@@ -86,7 +86,6 @@ packages = [
 # Pytest
 # ---------------------------------------------------------------------------
 [tool.pytest.ini_options]
-addopts = "--import-mode=importlib"
 
 # ---------------------------------------------------------------------------
 # Ruff — linter + formatter (replaces flake8, black, isort)
