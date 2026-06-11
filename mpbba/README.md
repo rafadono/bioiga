@@ -4,7 +4,7 @@ Multi-Population Binary Bat Algorithm (MPBBA) for discrete and binary optimizati
 
 ---
 
-## 📦 Installation
+## Installation
 
 Install as part of the BioIGA-2D suite from the repository root:
 
@@ -14,7 +14,7 @@ pip install -e .
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from mpbba.config import MPBBAConfig
@@ -32,7 +32,7 @@ config_single = MPBBAConfig(num_islands=1, transfer_function="v_shape", generati
 
 ---
 
-## ⚙️ `MPBBAConfig` — Hyperparameters
+## `MPBBAConfig` — Hyperparameters
 
 ```python
 from mpbba.config import MPBBAConfig
@@ -73,7 +73,7 @@ config = MPBBAConfig(
 
 ---
 
-## 🧪 Benchmark Environments
+## Benchmark Environments
 
 | Environment | Behavior |
 |---|---|
@@ -82,7 +82,7 @@ config = MPBBAConfig(
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ```python
 from mpbba.main import main
@@ -93,7 +93,7 @@ Shared utilities are provided by `bioiga.shared` (transfer functions, binary enc
 
 ---
 
-## 📚 Scientific Background
+## Scientific Background
 
 > **R. Inostroza Azócar** — *"Optimización de bandgap en metamateriales acústicos mediante Análisis Isogeométrico y algoritmos evolutivos"*, M.Sc. Thesis, Universidad de Chile, 2022.
 

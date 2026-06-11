@@ -4,7 +4,7 @@ Multi-Population Binary Grey Wolf Optimizer (MPBGWO) for discrete and binary opt
 
 ---
 
-## 📦 Installation
+## Installation
 
 Install as part of the BioIGA-2D suite from the repository root:
 
@@ -14,7 +14,7 @@ pip install -e .
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from mpbgwo.config import MPBGWOConfig
@@ -32,7 +32,7 @@ config_single = MPBGWOConfig(num_islands=1, transfer_function="v_shape", generat
 
 ---
 
-## ⚙️ `MPBGWOConfig` — Hyperparameters
+## `MPBGWOConfig` — Hyperparameters
 
 ```python
 from mpbgwo.config import MPBGWOConfig
@@ -65,7 +65,7 @@ config = MPBGWOConfig(
 
 ---
 
-## 🧪 Benchmark Environments
+## Benchmark Environments
 
 | Environment | Behavior |
 |---|---|
@@ -74,7 +74,7 @@ config = MPBGWOConfig(
 
 ---
 
-## 🚀 Usage
+## Usage
 
 ```python
 from mpbgwo.main import main
@@ -85,7 +85,7 @@ Shared utilities are provided by `bioiga.shared` (transfer functions, binary enc
 
 ---
 
-## 📚 Scientific Background
+## Scientific Background
 
 > **R. Inostroza Azócar** — *"Optimización de bandgap en metamateriales acústicos mediante Análisis Isogeométrico y algoritmos evolutivos"*, M.Sc. Thesis, Universidad de Chile, 2022.
 

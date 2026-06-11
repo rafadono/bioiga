@@ -6,7 +6,7 @@ Specifically, it models the **Longevity Bottleneck Hypothesis** (João Pedro de 
 
 ---
 
-## 📦 Installation
+## Installation
 
 Install as part of the BioIGA-2D suite from the repository root:
 
@@ -16,7 +16,7 @@ pip install -e .
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from mpga import MPGAConfig, MPGAAlgorithm, SphereMutationAccumulation
@@ -48,7 +48,7 @@ config = MPGAConfig(num_islands=1, generations=250)
 
 ---
 
-## 🏗️ Module Reference
+## Module Reference
 
 ```
 mpga/
@@ -65,7 +65,7 @@ mpga/
 
 ---
 
-## ⚙️ `MPGAConfig` — Hyperparameters
+## `MPGAConfig` — Hyperparameters
 
 ```python
 from mpga import MPGAConfig
@@ -98,7 +98,7 @@ config = MPGAConfig(
 
 ---
 
-## 🏝️ Island Model
+## Island Model
 
 The engine partitions the population into `num_islands` independent GAs. Every `migration_interval` generations, the top `migration_rate` individuals from each island are copied to the next in a **ring topology**:
 
@@ -110,7 +110,7 @@ When `num_islands=1`, migration is skipped — the algorithm runs as a standard 
 
 ---
 
-## 🔁 `MPGAAlgorithm` — Optimization Engine
+## `MPGAAlgorithm` — Optimization Engine
 
 Each generation per island:
 1. **Tournament selection** — select survivors
@@ -122,7 +122,7 @@ Each generation per island:
 
 ---
 
-## 🧪 Benchmark Environments
+## Benchmark Environments
 
 | Environment | Behavior |
 |---|---|
@@ -131,7 +131,7 @@ Each generation per island:
 
 ---
 
-## 📚 Scientific Background
+## Scientific Background
 
 > **R. Inostroza Azócar** — *"Optimización de bandgap en metamateriales acústicos mediante Análisis Isogeométrico y algoritmos evolutivos"*, M.Sc. Thesis, Universidad de Chile, 2022.
 

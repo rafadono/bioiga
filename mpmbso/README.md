@@ -9,7 +9,7 @@ The algorithm equations are taken from the **master's thesis of Rafael Inostroza
 
 ---
 
-## 📦 Installation
+## Installation
 
 Install as part of the BioIGA-2D suite from the repository root:
 
@@ -19,7 +19,7 @@ pip install -e .
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 from mpmbso.config import MPMBPSOConfig
@@ -58,7 +58,7 @@ history = algo.run()
 
 ---
 
-## 🏗️ Module Reference
+## Module Reference
 
 ```
 mpmbso/
@@ -76,7 +76,7 @@ mpmbso/
 
 ---
 
-## ⚙️ `MPMBPSOConfig` — Hyperparameters
+## `MPMBPSOConfig` — Hyperparameters
 
 ```python
 from mpmbso.config import MPMBPSOConfig
@@ -114,7 +114,7 @@ config = MPMBPSOConfig(
 
 ---
 
-## 🏝️ Island Model
+## Island Model
 
 The engine partitions the population into `num_islands` independent sub-swarms. Each island maintains its **own** `gbest` (global best within the island). Every `migration_interval` generations, the top `migration_rate` particles from each island are copied to the next island in a **ring topology**:
 
@@ -128,7 +128,7 @@ When `num_islands=1`, migration is skipped — the algorithm runs as a standard 
 
 ---
 
-## 🔄 Transfer Functions
+## Transfer Functions
 
 | Name | Formula | Behavior |
 |---|---|---|
@@ -142,7 +142,7 @@ $v_{scaled} = \alpha(t) \cdot v$, where $\alpha(t) = 2.0 - 1.9 \cdot \frac{t}{T_
 
 ---
 
-## 🧪 Benchmark Problems & Environments
+## Benchmark Problems & Environments
 
 ```python
 from mpmbso.benchmarks import Sphere, Rastrigin, Rosenbrock
@@ -157,7 +157,7 @@ from mpmbso.benchmarks import SphereTraditional, SphereMutationAccumulation
 
 ---
 
-## 📊 Metrics & Visualization
+## Metrics & Visualization
 
 ```python
 from mpmbso.metrics import MPMBPSOMetricsEvaluator
@@ -175,7 +175,7 @@ plot_tf_comparison(tf_results=tf_results_dict, output_path="output/mpmbso_tf_com
 
 ---
 
-## 🏃 Running the Full Simulation Suite
+## Running the Full Simulation Suite
 
 ```bash
 # From the monorepo root
@@ -203,7 +203,7 @@ python -m mpmbso.main
 
 ---
 
-## 📐 Algorithm Equations
+## Algorithm Equations
 
 **Velocity update:**
 $$v_i^{(t+1)} = w \cdot v_i^{(t)} + c_1 r_1 (p_{best,i} - x_i^{(t)}) + c_2 r_2 (g_{best} - x_i^{(t)})$$
@@ -219,7 +219,7 @@ $$\alpha(t) = 2.0 - 1.9 \cdot \frac{t}{T_{max}}$$
 
 ---
 
-## 📚 Scientific Background
+## Scientific Background
 
 > **R. Inostroza Azócar** — *"Optimización de bandgap en metamateriales acústicos mediante Análisis Isogeométrico y algoritmos evolutivos"*, M.Sc. Thesis, Universidad de Chile, 2022.
 

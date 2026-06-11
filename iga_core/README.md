@@ -15,7 +15,7 @@ IGA is a generalization of the Finite Element Method (FEM) that uses the same NU
 
 ---
 
-## 📦 Installation
+## Installation
 
 This package uses [Maturin](https://maturin.rs) to compile the `iga_rust` Rust extension. Rust and Cargo must be installed.
 
@@ -40,7 +40,7 @@ maturin develop --release
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```python
 import numpy as np
@@ -80,7 +80,7 @@ IGAViz.plot_design(best_design, title="Cantilever Topology Optimization")
 
 ---
 
-## 🏗️ Module Reference
+## Module Reference
 
 ```
 iga_core/
@@ -100,7 +100,7 @@ iga_core/
 
 ---
 
-## 📐 `IGAGeometry` — NURBS Geometry
+## `IGAGeometry` — NURBS Geometry
 
 Defines a 2D NURBS patch with control points `P`, weights `W`, and knot vectors `U`, `V`.
 
@@ -136,7 +136,7 @@ geometry = IGAGeometry(p, q, knot_u, knot_v, ctrl_pts, weights=weights)
 
 ---
 
-## 🔬 `StructuralKernel` — Material Physics
+## `StructuralKernel` — Material Physics
 
 Plane-stress constitutive model with SIMP topology penalization.
 
@@ -159,7 +159,7 @@ kernel = StructuralKernel(
 
 ---
 
-## ⚙️ `IGAConfig` — Hyperparameters
+## `IGAConfig` — Hyperparameters
 
 All algorithm parameters in a single `@dataclass`. Can be saved/loaded as JSON.
 
@@ -189,7 +189,7 @@ config = IGAConfig.load_from_json("config.json")
 
 ---
 
-## 🧩 Boundary Conditions
+## Boundary Conditions
 
 All boundary conditions are composable via `LoadCase`, which chains conditions sequentially.
 
@@ -216,7 +216,7 @@ K_final, M_final, F_final = load_case.apply_all(K, M, F)
 
 ---
 
-## 🔩 `IGASolver` — Solver
+## `IGASolver` — Solver
 
 The solver is powered by the `iga_rust` Rust extension for fast element assembly.
 
@@ -249,7 +249,7 @@ the `solve_bloch_frequencies` method constructs a complex Hermitian projection m
 
 ---
 
-## 🧬 `IGAOptimizer` — Optimization Algorithms
+## `IGAOptimizer` — Optimization Algorithms
 
 ### Single-Population GA
 
@@ -311,7 +311,7 @@ Runs MS-MBPSO for initial exploration, then seeds MpGA populations with the best
 
 ---
 
-## 🎯 Fitness Objectives
+## Fitness Objectives
 
 | `objective_type` | Optimization goal | Physics |
 |---|---|---|
@@ -333,7 +333,7 @@ Islands 0 and 2 optimize with Strategy 1; Islands 1 and 3 use Strategy 2. Elite 
 
 ---
 
-## 📊 Visualization
+## Visualization
 
 Results are saved to `resultados/` by default (300 DPI PNG).
 
@@ -354,7 +354,7 @@ IGAViz.plot_evolution(design, title="Fitness Evolution", output_dir="results/")
 
 ---
 
-## 🖥️ Command-Line Interface
+## Command-Line Interface
 
 The package installs an `iga-run` entry point:
 
@@ -388,7 +388,7 @@ iga-run --example tf_plate --elements 16
 
 ---
 
-## ⚡ Rust Backend Performance
+## Rust Backend Performance
 
 The `iga_rust` native extension (built with [PyO3](https://pyo3.rs) + Rust 2021 edition) implements the inner loop of element assembly. The solver precomputes solid element matrices $(K_e^0, M_e^0)$ once per geometry, then the Rust layer performs SIMP-weighted COO sparse matrix construction in native speed.
 
@@ -415,7 +415,7 @@ Additional performance optimizations:
 
 ---
 
-## 🔧 Hyperparameter Tuning
+## Hyperparameter Tuning
 
 ```python
 from iga_core.study import run_study
@@ -431,7 +431,7 @@ df_results, best_params = run_study(
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 cd iga_core
@@ -442,7 +442,7 @@ Tests cover: NURBS geometry evaluation, Boehm's knot insertion, static solver ac
 
 ---
 
-## 📁 Output Files
+## Output Files
 
 | Experiment | Output files |
 |---|---|
@@ -454,7 +454,7 @@ Tests cover: NURBS geometry evaluation, Boehm's knot insertion, static solver ac
 
 ---
 
-## 📚 Scientific Background
+## Scientific Background
 
 This library implements the IGA structural mechanics formulation from:
 
