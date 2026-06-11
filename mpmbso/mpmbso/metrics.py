@@ -1,4 +1,3 @@
-from typing import Dict, List
 from bioiga.shared.metrics import (
     calculate_auc,
     calculate_convergence_speed,
@@ -18,27 +17,21 @@ class MPMBPSOMetricsEvaluator:
     """
 
     @staticmethod
-    def calculate_auc(fitness_history: List[float]) -> float:
+    def calculate_auc(fitness_history: list[float]) -> float:
         """Area under the convergence curve (lower = faster convergence)."""
         return calculate_auc(fitness_history)
 
     @staticmethod
-    def calculate_convergence_speed(
-        fitness_history: List[float], threshold: float = 0.01
-    ) -> int:
+    def calculate_convergence_speed(fitness_history: list[float], threshold: float = 0.01) -> int:
         """First generation at which error drops to or below ``threshold``."""
         return calculate_convergence_speed(fitness_history, threshold)
 
     @staticmethod
-    def calculate_recovery_rate(
-        errors: List[float], event_gen: int, window: int = 20
-    ) -> float:
+    def calculate_recovery_rate(errors: list[float], event_gen: int, window: int = 20) -> float:
         """Average per-generation error change in the ``window`` gens after event."""
         return calculate_recovery_rate(errors, event_gen, window)
 
     @staticmethod
-    def generate_report(
-        results: Dict[str, Dict[str, List[float]]], config
-    ) -> None:
+    def generate_report(results: dict[str, dict[str, list[float]]], config) -> None:
         """Print the standardized MPMBPSO convergence report."""
         generate_report(results, config, label="MPMBPSO")

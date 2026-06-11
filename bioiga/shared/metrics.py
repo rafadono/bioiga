@@ -11,10 +11,8 @@ the duplicated static methods that previously lived in every package's
 functions.
 """
 
-from typing import Dict, List
 
-
-def calculate_auc(fitness_history: List[float]) -> float:
+def calculate_auc(fitness_history: list[float]) -> float:
     """
     Compute the Area Under the Convergence Curve (AUC) using the
     trapezoidal rule.
@@ -35,23 +33,21 @@ def calculate_auc(fitness_history: List[float]) -> float:
         return float("inf")
     try:
         import numpy as np
+
         trapz_func = getattr(np, "trapezoid", getattr(np, "trapz", None))
         if trapz_func is not None:
             return float(trapz_func(fitness_history))
         y = np.array(fitness_history)
-        return float(sum((a + b) / 2.0 for a, b in zip(y[:-1], y[1:])))
+        return float(sum((a + b) / 2.0 for a, b in zip(y[:-1], y[1:], strict=False)))
     except Exception:
         n = len(fitness_history)
         if n < 2:
             return fitness_history[0] if fitness_history else float("inf")
-        return sum(
-            (fitness_history[i] + fitness_history[i + 1]) / 2.0
-            for i in range(n - 1)
-        )
+        return sum((fitness_history[i] + fitness_history[i + 1]) / 2.0 for i in range(n - 1))
 
 
 def calculate_convergence_speed(
-    fitness_history: List[float],
+    fitness_history: list[float],
     threshold: float = 0.01,
 ) -> int:
     """
@@ -77,7 +73,7 @@ def calculate_convergence_speed(
 
 
 def calculate_recovery_rate(
-    errors: List[float],
+    errors: list[float],
     event_gen: int,
     window: int = 20,
 ) -> float:
@@ -108,7 +104,7 @@ def calculate_recovery_rate(
 
 
 def generate_report(
-    results: Dict[str, Dict[str, List[float]]],
+    results: dict[str, dict[str, list[float]]],
     config,
     label: str = "Algorithm",
 ) -> None:

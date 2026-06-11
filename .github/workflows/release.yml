@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install ruff
         run: pip install ruff
       - name: Check formatting
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12']
+        python-version: ['3.12']
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4
-        if: matrix.python-version == '3.11'   # Upload once only
+        if: matrix.python-version == '3.12'   # Upload once only
         with:
           files: coverage.xml
           fail_ci_if_error: false              # Don't break CI if Codecov is down
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Install mypy and stubs
         run: pip install mypy numpy
       - name: Run mypy
@@ -114,7 +114,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
 
       - name: Build iga-core wheels via Maturin
         uses: PyO3/maturin-action@v1
@@ -142,7 +142,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
       - name: Build wheel
         run: |
           pip install build

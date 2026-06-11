@@ -1,6 +1,8 @@
 import numpy as np
-from .config import MPBFAConfig
+
 from bioiga.shared.binary_encoding import decode_binary_10bit
+
+from .config import MPBFAConfig
 
 
 class Firefly:

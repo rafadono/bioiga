@@ -1,12 +1,16 @@
 import os
+
 import optuna
 import pandas as pd
+
+from .benchmarks import BottleneckEnv, Rastrigin, Rosenbrock, Sphere, TraditionalEnv
 from .config import MPBBAConfig
-from .benchmarks import Sphere, Rastrigin, Rosenbrock, TraditionalEnv, BottleneckEnv
 from .engine import MPBBAAlgorithm
 
 
-def run_study(problem_name: str = "Sphere", env_name: str = "Traditional", n_trials: int = 30) -> pd.DataFrame:
+def run_study(
+    problem_name: str = "Sphere", env_name: str = "Traditional", n_trials: int = 30
+) -> pd.DataFrame:
     problems = {
         "Sphere": Sphere(),
         "Rastrigin": Rastrigin(),
@@ -15,8 +19,9 @@ def run_study(problem_name: str = "Sphere", env_name: str = "Traditional", n_tri
     problem = problems[problem_name]
 
     def objective(trial):
-        tf = trial.suggest_categorical("transfer_function",
-                                       ["v_shape", "s_shape", "u_shape", "z_shape"])
+        tf = trial.suggest_categorical(
+            "transfer_function", ["v_shape", "s_shape", "u_shape", "z_shape"]
+        )
         tv = trial.suggest_categorical("is_time_varying", [False, True])
         f_max = trial.suggest_float("f_max", 1.0, 5.0)
         alpha_ba = trial.suggest_float("alpha_ba", 0.80, 0.99)
@@ -36,14 +41,17 @@ def run_study(problem_name: str = "Sphere", env_name: str = "Traditional", n_tri
             mutation_rate=mut,
             culling_rate=cull,
             max_lifespan=lifespan,
-            use_environmental_culling=trial.suggest_categorical("use_environmental_culling", [False, True]),
+            use_environmental_culling=trial.suggest_categorical(
+                "use_environmental_culling", [False, True]
+            ),
             use_age_mortality=trial.suggest_categorical("use_age_mortality", [False, True]),
         )
 
-        if env_name == "Bottleneck":
-            strategy = BottleneckEnv(problem, config)
-        else:
-            strategy = TraditionalEnv(problem, config)
+        strategy = (
+            BottleneckEnv(problem, config)
+            if env_name == "Bottleneck"
+            else TraditionalEnv(problem, config)
+        )
 
         algo = MPBBAAlgorithm(config, strategy)
         history = algo.run()

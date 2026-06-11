@@ -7,7 +7,7 @@ name = "mpbba"
 version = "0.2.0"
 description = "Multi-Population Binary Bat Algorithm (MPBBA) for discrete and binary optimization"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 authors = [
     { name = "Rafael Inostroza" }

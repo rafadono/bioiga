@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+
 from mpbba.config import MPBBAConfig
 from mpbba.domain import Bat
 

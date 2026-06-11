@@ -11,15 +11,18 @@ via the duck-typed ``agent`` parameter.
 Usage::
 
     from bioiga.shared.benchmarks import (
-        Sphere, Rastrigin, Rosenbrock,
-        TraditionalEnv, BottleneckEnv,
+        Sphere,
+        Rastrigin,
+        Rosenbrock,
+        TraditionalEnv,
+        BottleneckEnv,
     )
 """
 
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Tuple
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -30,6 +33,7 @@ if TYPE_CHECKING:
 # ---------------------------------------------------------------------------
 # Mathematical benchmark functions
 # ---------------------------------------------------------------------------
+
 
 class MathProblem(ABC):
     """Abstract base for a mathematical benchmark function."""
@@ -43,7 +47,7 @@ class Sphere(MathProblem):
     """Sphere function: f(x) = Σ xᵢ²  (global min = 0 at origin)."""
 
     def evaluate_partial(self, genes: np.ndarray) -> float:
-        return float(np.sum(genes ** 2))
+        return float(np.sum(genes**2))
 
 
 class Rastrigin(MathProblem):
@@ -55,7 +59,7 @@ class Rastrigin(MathProblem):
 
     def evaluate_partial(self, genes: np.ndarray) -> float:
         A = 10
-        return float(A * len(genes) + np.sum(genes ** 2 - A * np.cos(2 * np.pi * genes)))
+        return float(A * len(genes) + np.sum(genes**2 - A * np.cos(2 * np.pi * genes)))
 
 
 class Rosenbrock(MathProblem):
@@ -70,12 +74,13 @@ class Rosenbrock(MathProblem):
             return 0.0
         x0 = genes[:-1]
         x1 = genes[1:]
-        return float(np.sum(100.0 * (x1 - x0 ** 2) ** 2 + (1 - x0) ** 2))
+        return float(np.sum(100.0 * (x1 - x0**2) ** 2 + (1 - x0) ** 2))
 
 
 # ---------------------------------------------------------------------------
 # Evolutionary environments (fitness strategies)
 # ---------------------------------------------------------------------------
+
 
 class FitnessStrategy(ABC):
     """
@@ -93,7 +98,7 @@ class FitnessStrategy(ABC):
         self.config = config
 
     @abstractmethod
-    def evaluate(self, agent: Any, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, agent: Any, current_gen: int) -> tuple[float, float, float]:
         """
         Evaluate agent fitness.
 
@@ -115,7 +120,7 @@ class TraditionalEnv(FitnessStrategy):
     selection pressure across the full lifespan.
     """
 
-    def evaluate(self, agent: Any, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, agent: Any, current_gen: int) -> tuple[float, float, float]:
         youth_err = self.problem.evaluate_partial(agent.get_youth_genes())
         late_err = self.problem.evaluate_partial(agent.get_late_genes())
         return -(youth_err + late_err), youth_err, late_err
@@ -139,7 +144,7 @@ class BottleneckEnv(FitnessStrategy):
         Functional Ecology, 2024.
     """
 
-    def evaluate(self, agent: Any, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, agent: Any, current_gen: int) -> tuple[float, float, float]:
         youth_err = self.problem.evaluate_partial(agent.get_youth_genes())
         late_err = self.problem.evaluate_partial(agent.get_late_genes())
         if current_gen < self.config.asteroid_gen:

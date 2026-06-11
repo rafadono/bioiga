@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+
 from mpmbso.config import MPMBPSOConfig
 from mpmbso.domain import Particle
 

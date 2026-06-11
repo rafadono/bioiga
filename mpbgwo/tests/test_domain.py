@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+
 from mpbgwo.config import MPBGWOConfig
 from mpbgwo.domain import Wolf
 

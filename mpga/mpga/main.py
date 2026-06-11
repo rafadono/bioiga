@@ -1,9 +1,10 @@
 import os
+
+from .benchmarks import SphereMutationAccumulation, SphereTraditional
 from .config import MPGAConfig
-from .benchmarks import SphereTraditional, SphereMutationAccumulation
 from .engine import MPGAAlgorithm
-from .visualization import plot_results
 from .metrics import MPGAMetricsEvaluator
+from .visualization import plot_results
 
 
 def main():
@@ -22,10 +23,7 @@ def main():
 
     print("Running: Module A + B (Age) + C (Environmental Culling)...")
     config_full = MPGAConfig(
-        use_age_mortality=True,
-        max_lifespan=15,
-        use_environmental_culling=True,
-        culling_rate=0.25
+        use_age_mortality=True, max_lifespan=15, use_environmental_culling=True, culling_rate=0.25
     )
     ga_full = MPGAAlgorithm(config_full, SphereMutationAccumulation(config_full))
     results["MPGA Modular Complete (A+B+C)"] = ga_full.run()

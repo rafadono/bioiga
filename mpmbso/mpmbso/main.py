@@ -1,10 +1,12 @@
 import os
+
 import pandas as pd
+
+from .benchmarks import SphereMutationAccumulation, SphereTraditional
 from .config import MPMBPSOConfig
-from .benchmarks import SphereTraditional, SphereMutationAccumulation
 from .engine import MPMBPSOAlgorithm
-from .visualization import plot_results
 from .metrics import MPMBPSOMetricsEvaluator
+from .visualization import plot_results
 
 
 def main():
@@ -59,6 +61,7 @@ def main():
         tf_results[label] = algo.run()
 
     from .visualization import plot_tf_comparison
+
     plot_tf_comparison(tf_results, os.path.join(output_dir, "mpmbso_tf_comparison.png"))
 
     print("\n" + "=" * 80)

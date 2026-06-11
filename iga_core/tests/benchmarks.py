@@ -1,9 +1,10 @@
 import numpy as np
+
+from iga_core.boundary import FixedSupport, LoadCase, PointLoad, RollerSupport
 from iga_core.geometry import IGAGeometry
-from iga_core.boundary import LoadCase, FixedSupport, RollerSupport, PointLoad
+
 
 class IGABenchmarks:
-    
     @staticmethod
     def paper_hughes_2005_plate_with_hole():
         """
@@ -16,36 +17,37 @@ class IGABenchmarks:
         p, q = 2, 2
         knot_u = [0, 0, 0, 1, 1, 1]
         knot_v = [0, 0, 0, 1, 1, 1]
-        
-        R = 1.0 # Hole radius
-        L = 4.0 # Plate side length
-        
+
+        R = 1.0  # Hole radius
+        L = 4.0  # Plate side length
+
         # Exact control points for a quarter ring
-        ctrl_pts = np.array([
-            [[-0.0, R], [-0.0, R + (L-R)/2], [-0.0, L]],
-            [[R, R], [R + (L-R)/2, R + (L-R)/2], [L, L]],
-            [[R, 0.0], [R + (L-R)/2, -0.0], [L, -0.0]]
-        ])
-        
+        ctrl_pts = np.array(
+            [
+                [[-0.0, R], [-0.0, R + (L - R) / 2], [-0.0, L]],
+                [[R, R], [R + (L - R) / 2, R + (L - R) / 2], [L, L]],
+                [[R, 0.0], [R + (L - R) / 2, -0.0], [L, -0.0]],
+            ]
+        )
+
         # Exact weights to form the perfect circular curve
         w = np.sqrt(2) / 2
-        weights = np.array([
-            [1.0, 1.0, 1.0],
-            [w,   1.0, 1.0],
-            [1.0, 1.0, 1.0]
-        ])
-        
+        weights = np.array([[1.0, 1.0, 1.0], [w, 1.0, 1.0], [1.0, 1.0, 1.0]])
+
         geo = IGAGeometry(p, q, knot_u, knot_v, ctrl_pts, weights)
-        
+
         # Symmetry Conditions (Rollers)
-        left_nodes = [0, 1, 2]   # Left boundary (x=0)
-        bottom_nodes = [6, 7, 8] # Bottom boundary (y=0)
+        left_nodes = [0, 1, 2]  # Left boundary (x=0)
+        bottom_nodes = [6, 7, 8]  # Bottom boundary (y=0)
         right_nodes = [2, 5, 8]  # Right boundary (Traction)
-        
-        load_case = LoadCase().add(RollerSupport(left_nodes, direction='x')) \
-                              .add(RollerSupport(bottom_nodes, direction='y')) \
-                              .add(PointLoad(right_nodes, fx=10.0))
-                              
+
+        load_case = (
+            LoadCase()
+            .add(RollerSupport(left_nodes, direction="x"))
+            .add(RollerSupport(bottom_nodes, direction="y"))
+            .add(PointLoad(right_nodes, fx=10.0))
+        )
+
         return geo, load_case
 
     @staticmethod
@@ -59,24 +61,27 @@ class IGABenchmarks:
         print("Loading Benchmark: Cottrell (2006) - Beam Vibrations")
         L, H = 10.0, 1.0
         nx, ny = 10, 2
-        
-        knot_u = np.concatenate(([0]*2, np.linspace(0, 1, nx-1), [1]*2))
+
+        knot_u = np.concatenate(([0] * 2, np.linspace(0, 1, nx - 1), [1] * 2))
         knot_v = [0, 0, 1, 1]
-        
+
         ctrl_pts = np.zeros((nx, ny, 2))
         for i in range(nx):
             for j in range(ny):
-                ctrl_pts[i, j] = [i * (L/(nx-1)), j * H]
-                
+                ctrl_pts[i, j] = [i * (L / (nx - 1)), j * H]
+
         geo = IGAGeometry(1, 1, knot_u, knot_v, ctrl_pts)
-        
+
         # Simple supports at the ends
         left_bottom = [0]
         right_bottom = [nx * ny - ny]
-        
-        load_case = LoadCase().add(FixedSupport(left_bottom)) \
-                              .add(RollerSupport(right_bottom, direction='y'))
-                              
+
+        load_case = (
+            LoadCase()
+            .add(FixedSupport(left_bottom))
+            .add(RollerSupport(right_bottom, direction="y"))
+        )
+
         return geo, load_case
 
     @staticmethod
@@ -90,20 +95,23 @@ class IGABenchmarks:
         nx, ny = 30, 10
         knot_u = np.concatenate(([0], np.linspace(0, 1, nx), [1]))
         knot_v = np.concatenate(([0], np.linspace(0, 1, ny), [1]))
-        
+
         ctrl_pts = np.zeros((nx, ny, 2))
         for i in range(nx):
             for j in range(ny):
-                ctrl_pts[i, j] = [i * 0.1, j * 0.1] # 3:1 aspect ratio
-                
+                ctrl_pts[i, j] = [i * 0.1, j * 0.1]  # 3:1 aspect ratio
+
         geo = IGAGeometry(1, 1, knot_u, knot_v, ctrl_pts)
-        
-        top_left = [ny - 1] # Point load downwards
-        bottom_right = [nx * ny - ny] # Simple support
-        left_edge = [j for j in range(ny)] # Symmetry
-        
-        load_case = LoadCase().add(PointLoad(top_left, fy=-100.0)) \
-                              .add(RollerSupport(bottom_right, direction='y')) \
-                              .add(RollerSupport(left_edge, direction='x'))
-                              
+
+        top_left = [ny - 1]  # Point load downwards
+        bottom_right = [nx * ny - ny]  # Simple support
+        left_edge = [j for j in range(ny)]  # Symmetry
+
+        load_case = (
+            LoadCase()
+            .add(PointLoad(top_left, fy=-100.0))
+            .add(RollerSupport(bottom_right, direction="y"))
+            .add(RollerSupport(left_edge, direction="x"))
+        )
+
         return geo, load_case

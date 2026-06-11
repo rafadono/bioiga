@@ -1,13 +1,14 @@
-import numpy as np
 from abc import ABC, abstractmethod
-from typing import Tuple
-from .domain import Particle
-from .config import MPMBPSOConfig
 
+import numpy as np
+
+from .config import MPMBPSOConfig
+from .domain import Particle
 
 # ==========================================
 # CATALOG OF MATHEMATICAL PROBLEMS
 # ==========================================
+
 
 class MathProblem(ABC):
     @abstractmethod
@@ -17,13 +18,13 @@ class MathProblem(ABC):
 
 class Sphere(MathProblem):
     def evaluate_partial(self, genes: np.ndarray) -> float:
-        return float(np.sum(genes ** 2))
+        return float(np.sum(genes**2))
 
 
 class Rastrigin(MathProblem):
     def evaluate_partial(self, genes: np.ndarray) -> float:
         A = 10
-        return float(A * len(genes) + np.sum(genes ** 2 - A * np.cos(2 * np.pi * genes)))
+        return float(A * len(genes) + np.sum(genes**2 - A * np.cos(2 * np.pi * genes)))
 
 
 class Rosenbrock(MathProblem):
@@ -32,12 +33,13 @@ class Rosenbrock(MathProblem):
             return 0.0
         x0 = genes[:-1]
         x1 = genes[1:]
-        return float(np.sum(100.0 * (x1 - x0 ** 2) ** 2 + (1 - x0) ** 2))
+        return float(np.sum(100.0 * (x1 - x0**2) ** 2 + (1 - x0) ** 2))
 
 
 # ==========================================
 # EVOLUTIONARY ENVIRONMENTS (STRATEGIES)
 # ==========================================
+
 
 class FitnessStrategy(ABC):
     def __init__(self, problem: MathProblem, config: MPMBPSOConfig):
@@ -45,12 +47,12 @@ class FitnessStrategy(ABC):
         self.config = config
 
     @abstractmethod
-    def evaluate(self, particle: Particle, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, particle: Particle, current_gen: int) -> tuple[float, float, float]:
         pass
 
 
 class TraditionalEnv(FitnessStrategy):
-    def evaluate(self, particle: Particle, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, particle: Particle, current_gen: int) -> tuple[float, float, float]:
         youth_err = self.problem.evaluate_partial(particle.get_youth_genes())
         late_err = self.problem.evaluate_partial(particle.get_late_genes())
         fitness = -(youth_err + late_err)
@@ -58,7 +60,7 @@ class TraditionalEnv(FitnessStrategy):
 
 
 class BottleneckEnv(FitnessStrategy):
-    def evaluate(self, particle: Particle, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, particle: Particle, current_gen: int) -> tuple[float, float, float]:
         youth_err = self.problem.evaluate_partial(particle.get_youth_genes())
         late_err = self.problem.evaluate_partial(particle.get_late_genes())
         if current_gen < self.config.asteroid_gen:
@@ -71,6 +73,7 @@ class BottleneckEnv(FitnessStrategy):
 # ==========================================
 # CONVENIENCE WRAPPERS
 # ==========================================
+
 
 class SphereTraditional(TraditionalEnv):
     def __init__(self, config=None):

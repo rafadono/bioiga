@@ -1,4 +1,5 @@
 import numpy as np
+
 from .config import MPGAConfig
 
 
@@ -28,10 +29,10 @@ class Individual:
         self.genes = np.clip(self.genes, self.config.bounds[0], self.config.bounds[1])
 
     def get_youth_genes(self) -> np.ndarray:
-        return self.genes[:self.config.youth_variables]
+        return self.genes[: self.config.youth_variables]
 
     def get_late_genes(self) -> np.ndarray:
-        return self.genes[self.config.youth_variables:]
+        return self.genes[self.config.youth_variables :]
 
     def apply_parental_age_mutations(self, age1: int, age2: int) -> None:
         """
@@ -40,7 +41,9 @@ class Individual:
         mutations inherited by the offspring (parental age effect).
         """
         avg_parental_age = (age1 + age2) / 2.0
-        extra_mutation_rate = self.config.mutation_rate * (avg_parental_age * 0.1)  # 10% more per unit of age
+        extra_mutation_rate = self.config.mutation_rate * (
+            avg_parental_age * 0.1
+        )  # 10% more per unit of age
 
         mask = np.random.rand(self.config.num_variables) < extra_mutation_rate
         if np.any(mask):

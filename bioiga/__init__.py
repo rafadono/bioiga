@@ -9,10 +9,10 @@ Install the full suite from the project root::
 Then import algorithms directly from their packages::
 
     from mpmbso import MPMBPSOAlgorithm, MPMBPSOConfig
-    from mpga   import MPGAAlgorithm,   MPGAConfig
-    from mpbfa  import MPBFAAlgorithm,  MPBFAConfig
+    from mpga import MPGAAlgorithm, MPGAConfig
+    from mpbfa import MPBFAAlgorithm, MPBFAConfig
     from mpbgwo import MPBGWOAlgorithm, MPBGWOConfig
-    from mpbba  import MPBBAAlgorithm,  MPBBAConfig
+    from mpbba import MPBBAAlgorithm, MPBBAConfig
 
 Or via this meta-package::
 
@@ -30,43 +30,64 @@ def __getattr__(name: str):
     works without causing circular import issues at module load time.
     """
     _mpmbso = (
-        "MPMBPSOConfig", "MPMBPSOAlgorithm", "Particle",
+        "MPMBPSOConfig",
+        "MPMBPSOAlgorithm",
+        "Particle",
         "MPMBPSOMetricsEvaluator",
     )
     _mpga = (
-        "MPGAConfig", "MPGAAlgorithm", "Individual", "MPGAMetricsEvaluator",
+        "MPGAConfig",
+        "MPGAAlgorithm",
+        "Individual",
+        "MPGAMetricsEvaluator",
     )
     _mpbfa = (
-        "MPBFAConfig", "MPBFAAlgorithm", "Firefly", "MPBFAMetricsEvaluator",
+        "MPBFAConfig",
+        "MPBFAAlgorithm",
+        "Firefly",
+        "MPBFAMetricsEvaluator",
     )
     _mpbgwo = (
-        "MPBGWOConfig", "MPBGWOAlgorithm", "Wolf", "MPBGWOMetricsEvaluator",
+        "MPBGWOConfig",
+        "MPBGWOAlgorithm",
+        "Wolf",
+        "MPBGWOMetricsEvaluator",
     )
     _mpbba = (
-        "MPBBAConfig", "MPBBAAlgorithm", "Bat", "MPBBAMetricsEvaluator",
+        "MPBBAConfig",
+        "MPBBAAlgorithm",
+        "Bat",
+        "MPBBAMetricsEvaluator",
     )
 
     if name in _mpmbso:
         import mpmbso
+
         return getattr(mpmbso, name)
     if name in _mpga:
         import mpga
+
         return getattr(mpga, name)
     if name in _mpbfa:
         import mpbfa
+
         return getattr(mpbfa, name)
     if name in _mpbgwo:
         import mpbgwo
+
         return getattr(mpbgwo, name)
     if name in _mpbba:
         import mpbba
+
         return getattr(mpbba, name)
 
     raise AttributeError(f"module 'bioiga' has no attribute {name!r}")
 
 
 try:
-    from importlib.metadata import version as _version, PackageNotFoundError as _PNFError
+    from importlib.metadata import PackageNotFoundError as _PNFError
+    from importlib.metadata import version as _version
+
     __version__ = _version("bioiga")
     del _version, _PNFError
 except Exception:
@@ -75,15 +96,25 @@ __author__ = "Rafael Inostroza"
 
 __all__ = [
     # MPMBPSO
-    "MPMBPSOConfig", "MPMBPSOAlgorithm", "Particle",
+    "MPMBPSOConfig",
+    "MPMBPSOAlgorithm",
+    "Particle",
     # MPGA
-    "MPGAConfig", "MPGAAlgorithm", "Individual",
+    "MPGAConfig",
+    "MPGAAlgorithm",
+    "Individual",
     # MPBFA
-    "MPBFAConfig", "MPBFAAlgorithm", "Firefly",
+    "MPBFAConfig",
+    "MPBFAAlgorithm",
+    "Firefly",
     # MPBGWO
-    "MPBGWOConfig", "MPBGWOAlgorithm", "Wolf",
+    "MPBGWOConfig",
+    "MPBGWOAlgorithm",
+    "Wolf",
     # MPBBA
-    "MPBBAConfig", "MPBBAAlgorithm", "Bat",
+    "MPBBAConfig",
+    "MPBBAAlgorithm",
+    "Bat",
     # Shared utilities namespace
     "shared",
 ]

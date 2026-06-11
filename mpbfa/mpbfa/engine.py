@@ -1,12 +1,11 @@
-import copy
 import numpy as np
-from typing import Dict, List, Tuple
 
-from .transfer_functions import apply_transfer_function, apply_position_update
+from bioiga.shared.migration import ring_migrate
+
+from .benchmarks import FitnessStrategy
 from .config import MPBFAConfig
 from .domain import Firefly
-from .benchmarks import FitnessStrategy
-from bioiga.shared.migration import ring_migrate
+from .transfer_functions import apply_position_update, apply_transfer_function
 
 
 class MPBFAAlgorithm:
@@ -77,13 +76,12 @@ class MPBFAAlgorithm:
         self.alpha = config.alpha  # mutable copy for decay schedule
 
         # Initialize islands: list of lists of Firefly objects
-        self.islands: List[List[Firefly]] = [
-            [Firefly(config) for _ in range(config.pop_size)]
-            for _ in range(config.num_islands)
+        self.islands: list[list[Firefly]] = [
+            [Firefly(config) for _ in range(config.pop_size)] for _ in range(config.num_islands)
         ]
 
         # Metrics history (aggregated across all islands)
-        self.history: Dict[str, List[float]] = {
+        self.history: dict[str, list[float]] = {
             "gen": [],
             "best_fitness": [],
             "youth_error": [],
@@ -94,7 +92,7 @@ class MPBFAAlgorithm:
     # PRIVATE HELPERS
     # ------------------------------------------------------------------
 
-    def _evaluate_island(self, island: List[Firefly], gen: int) -> None:
+    def _evaluate_island(self, island: list[Firefly], gen: int) -> None:
         """Evaluate fitness for all fireflies on a single island."""
         for firefly in island:
             fit, y_err, l_err = self.fitness_strategy.evaluate(firefly, gen)
@@ -111,7 +109,7 @@ class MPBFAAlgorithm:
         the configured transfer function to determine flip probabilities.
         """
         r = fi.hamming_distance_to(fj)
-        beta = self.config.beta0 * np.exp(-self.config.gamma * r ** 2)
+        beta = self.config.beta0 * np.exp(-self.config.gamma * r**2)
 
         # Continuous velocity: attraction component + random walk
         diff = fj.position.astype(float) - fi.position.astype(float)
@@ -145,7 +143,7 @@ class MPBFAAlgorithm:
         )
         fi.position = apply_position_update(fi.position, T, is_absolute)
 
-    def _evolve_island(self, island: List[Firefly], gen: int) -> None:
+    def _evolve_island(self, island: list[Firefly], gen: int) -> None:
         """
         Run one generation of the Binary Firefly Algorithm on a single island.
 
@@ -180,7 +178,7 @@ class MPBFAAlgorithm:
     # PUBLIC RUN METHOD
     # ------------------------------------------------------------------
 
-    def run(self) -> Dict[str, List[float]]:
+    def run(self) -> dict[str, list[float]]:
         """
         Execute the full MPBFA optimization run.
 
@@ -195,7 +193,6 @@ class MPBFAAlgorithm:
             }
         """
         for gen in range(self.config.generations):
-
             # Increment age and apply age mortality (Parity feature)
             for island in self.islands:
                 for f in island:
@@ -219,7 +216,7 @@ class MPBFAAlgorithm:
             all_fireflies = [f for island in self.islands for f in island]
             best = max(all_fireflies, key=lambda f: f.fitness)
             self.history["gen"].append(gen)
-            self.history["best_fitness"].append(-best.fitness)   # positive error for plots
+            self.history["best_fitness"].append(-best.fitness)  # positive error for plots
             self.history["youth_error"].append(best.youth_error)
             self.history["late_error"].append(best.late_error)
 
@@ -238,7 +235,9 @@ class MPBFAAlgorithm:
                 # Apply post-evolution mutation (Parity feature)
                 if self.config.mutation_rate > 0.0:
                     for f in island:
-                        mut_mask = np.random.rand(self.config.num_variables) < self.config.mutation_rate
+                        mut_mask = (
+                            np.random.rand(self.config.num_variables) < self.config.mutation_rate
+                        )
                         f.position[mut_mask] = 1 - f.position[mut_mask]
 
             # 5. Apply alpha decay (cooling schedule)

@@ -1,5 +1,5 @@
-import pytest
 import numpy as np
+
 from mpga.config import MPGAConfig
 from mpga.domain import Individual
 

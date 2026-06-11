@@ -1,7 +1,5 @@
-import pytest
-import numpy as np
-from mpbba.config import MPBBAConfig
 from mpbba.benchmarks import Sphere, TraditionalEnv
+from mpbba.config import MPBBAConfig
 from mpbba.engine import MPBBAAlgorithm
 
 
@@ -42,5 +40,5 @@ def test_mortality_and_culling_dont_crash():
     strategy = TraditionalEnv(Sphere(), config)
     algo = MPBBAAlgorithm(config, strategy)
     history = algo.run()
-    
+
     assert len(history["best_fitness"]) == 3

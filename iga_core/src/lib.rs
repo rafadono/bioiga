@@ -231,40 +231,40 @@ fn assemble_precomputed_rust(
     p_power: f64,
 ) -> PyResult<(Vec<i32>, Vec<i32>, Vec<f64>, Vec<i32>, Vec<i32>, Vec<f64>)> {
     let num_elements = (num_u - 1) * (num_v - 1);
-    
+
     let mut k_rows = Vec::with_capacity(num_elements * 64);
     let mut k_cols = Vec::with_capacity(num_elements * 64);
     let mut k_vals = Vec::with_capacity(num_elements * 64);
-    
+
     let mut m_rows = Vec::with_capacity(num_elements * 64);
     let mut m_cols = Vec::with_capacity(num_elements * 64);
     let mut m_vals = Vec::with_capacity(num_elements * 64);
-    
+
     let e_min = e0 * 1e-9;
     let rho_min = rho0 * 1e-9;
-    
+
     for i in 0..(num_u - 1) {
         for j in 0..(num_v - 1) {
             let el_idx = i * (num_v - 1) + j;
-            
+
             let idx0 = i * num_v + j;
             let idx1 = (i + 1) * num_v + j;
             let idx2 = (i + 1) * num_v + j + 1;
             let idx3 = i * num_v + j + 1;
-            
+
             let el_density = 0.25 * (
                 densities_flat[idx0] +
                 densities_flat[idx1] +
                 densities_flat[idx2] +
                 densities_flat[idx3]
             );
-            
+
             let e_penalized = e_min + el_density.powf(p_power) * (e0 - e_min);
             let s_factor = e_penalized / e0;
-            
+
             let ke_offset = el_idx * 64;
             let dofs_offset = el_idx * 8;
-            
+
             for r in 0..8 {
                 let global_r = local_dofs_flat[dofs_offset + r];
                 for c in 0..8 {
@@ -274,7 +274,7 @@ fn assemble_precomputed_rust(
                     k_vals.push(ke_solid_flat[ke_offset + r * 8 + c] * s_factor);
                 }
             }
-            
+
             if build_mass {
                 let rho_penalized = rho_min + el_density * (rho0 - rho_min);
                 let m_factor = rho_penalized / rho0;
@@ -291,7 +291,7 @@ fn assemble_precomputed_rust(
             }
         }
     }
-    
+
     Ok((k_rows, k_cols, k_vals, m_rows, m_cols, m_vals))
 }
 

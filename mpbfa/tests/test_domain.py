@@ -1,5 +1,6 @@
-import pytest
 import numpy as np
+import pytest
+
 from mpbfa.config import MPBFAConfig
 from mpbfa.domain import Firefly
 

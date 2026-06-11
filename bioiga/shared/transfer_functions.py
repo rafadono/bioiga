@@ -81,7 +81,7 @@ def apply_transfer_function(
         return T, False
 
     elif tf.startswith("u"):
-        T = np.minimum(1.0, scaled_v ** 2)
+        T = np.minimum(1.0, scaled_v**2)
         return T, False
 
     elif tf.startswith("z"):

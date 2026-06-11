@@ -1,10 +1,12 @@
 import os
+
 import pandas as pd
-from .config import MPBGWOConfig
+
 from .benchmarks import (
-    TraditionalEnv, BottleneckEnv,
-    SphereTraditional, SphereMutationAccumulation,
+    SphereMutationAccumulation,
+    SphereTraditional,
 )
+from .config import MPBGWOConfig
 from .engine import MPBGWOAlgorithm
 from .metrics import MPBGWOMetricsEvaluator
 from .visualization import plot_results, plot_tf_comparison
@@ -45,14 +47,14 @@ def main():
     # ── TRANSFER FUNCTION STUDY (8 variants × 200 generations) ──────────
     print("\nRunning 8-variant transfer function comparison...")
     tf_variants = [
-        ("S-shape (Static)",      "s_shape", False),
-        ("S-shape (TV)",          "s_shape", True),
-        ("V-shape (Static)",      "v_shape", False),
-        ("V-shape (TV)",          "v_shape", True),
-        ("U-shape (Static)",      "u_shape", False),
-        ("U-shape (TV)",          "u_shape", True),
-        ("Z-shape (Static)",      "z_shape", False),
-        ("Z-shape (TV)",          "z_shape", True),
+        ("S-shape (Static)", "s_shape", False),
+        ("S-shape (TV)", "s_shape", True),
+        ("V-shape (Static)", "v_shape", False),
+        ("V-shape (TV)", "v_shape", True),
+        ("U-shape (Static)", "u_shape", False),
+        ("U-shape (TV)", "u_shape", True),
+        ("Z-shape (Static)", "z_shape", False),
+        ("Z-shape (TV)", "z_shape", True),
     ]
 
     tf_results = {}

@@ -66,17 +66,17 @@ class MPMBPSOConfig:
     """
 
     # Problem dimensions
-    pop_size: int = 25              # Particles per island
-    num_variables: int = 100        # Binary search space dimensionality
+    pop_size: int = 25  # Particles per island
+    num_variables: int = 100  # Binary search space dimensionality
     generations: int = 250
     asteroid_gen: int = 150
     bounds: tuple = field(default_factory=lambda: (-5.12, 5.12))
 
     # PSO core
-    w: float = 0.5                  # Inertia weight
-    c1: float = 2.0                 # Cognitive coefficient
-    c2: float = 2.0                 # Social coefficient
-    v_max: float = 10.0             # Velocity clamp
+    w: float = 0.5  # Inertia weight
+    c1: float = 2.0  # Cognitive coefficient
+    c2: float = 2.0  # Social coefficient
+    v_max: float = 10.0  # Velocity clamp
 
     # Transfer function
     transfer_function: str = "v_shape"
@@ -84,8 +84,8 @@ class MPMBPSOConfig:
 
     # Multi-population island model
     num_islands: int = 4
-    migration_interval: int = 5    # Migrate every N generations
-    migration_rate: int = 1        # Elite particles per island per migration
+    migration_interval: int = 5  # Migrate every N generations
+    migration_rate: int = 1  # Elite particles per island per migration
 
     # Parity hyperparameters from MPGA
     mutation_rate: float = 0.0

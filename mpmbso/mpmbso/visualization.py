@@ -1,4 +1,3 @@
-from typing import Dict, List
 from bioiga.shared.visualization import plot_results as _plot_results
 from bioiga.shared.visualization import plot_tf_comparison as _plot_tf_comparison
 
@@ -6,7 +5,7 @@ _LABEL = "MPMBPSO"
 
 
 def plot_results(
-    results: Dict[str, Dict[str, List[float]]],
+    results: dict[str, dict[str, list[float]]],
     config,
     output_path: str,
 ) -> None:
@@ -19,7 +18,7 @@ def plot_results(
 
 
 def plot_tf_comparison(
-    tf_results: Dict[str, Dict[str, List[float]]],
+    tf_results: dict[str, dict[str, list[float]]],
     output_path: str,
 ) -> None:
     """

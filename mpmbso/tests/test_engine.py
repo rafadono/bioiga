@@ -1,7 +1,5 @@
-import pytest
-import numpy as np
-from mpmbso.config import MPMBPSOConfig
 from mpmbso.benchmarks import Sphere, TraditionalEnv
+from mpmbso.config import MPMBPSOConfig
 from mpmbso.engine import MPMBPSOAlgorithm
 
 

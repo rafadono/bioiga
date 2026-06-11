@@ -1,8 +1,10 @@
 import os
+
 import optuna
 import pandas as pd
+
+from .benchmarks import BottleneckEnv, Rastrigin, Rosenbrock, Sphere, TraditionalEnv
 from .config import MPMBPSOConfig
-from .benchmarks import Sphere, Rastrigin, Rosenbrock, TraditionalEnv, BottleneckEnv
 from .engine import MPMBPSOAlgorithm
 
 

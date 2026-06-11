@@ -1,12 +1,16 @@
 import os
+
 import optuna
 import pandas as pd
+
+from .benchmarks import BottleneckEnv, Rastrigin, Rosenbrock, Sphere, TraditionalEnv
 from .config import MPBFAConfig
-from .benchmarks import Sphere, Rastrigin, Rosenbrock, TraditionalEnv, BottleneckEnv
 from .engine import MPBFAAlgorithm
 
 
-def run_study(problem_name: str = "Sphere", env_name: str = "Traditional", n_trials: int = 30) -> pd.DataFrame:
+def run_study(
+    problem_name: str = "Sphere", env_name: str = "Traditional", n_trials: int = 30
+) -> pd.DataFrame:
     """
     Run an Optuna hyperparameter search for MPBFA on a given benchmark.
 
@@ -44,8 +48,9 @@ def run_study(problem_name: str = "Sphere", env_name: str = "Traditional", n_tri
         gamma = trial.suggest_float("gamma", 0.1, 5.0)
         alpha = trial.suggest_float("alpha", 0.1, 1.0)
         alpha_decay = trial.suggest_float("alpha_decay", 0.90, 1.00)
-        tf = trial.suggest_categorical("transfer_function",
-                                       ["v_shape", "s_shape", "u_shape", "z_shape"])
+        tf = trial.suggest_categorical(
+            "transfer_function", ["v_shape", "s_shape", "u_shape", "z_shape"]
+        )
         tv = trial.suggest_categorical("is_time_varying", [False, True])
 
         config = MPBFAConfig(
@@ -59,10 +64,11 @@ def run_study(problem_name: str = "Sphere", env_name: str = "Traditional", n_tri
             is_time_varying=tv,
         )
 
-        if env_name == "Bottleneck":
-            strategy = BottleneckEnv(problem, config)
-        else:
-            strategy = TraditionalEnv(problem, config)
+        strategy = (
+            BottleneckEnv(problem, config)
+            if env_name == "Bottleneck"
+            else TraditionalEnv(problem, config)
+        )
 
         algo = MPBFAAlgorithm(config, strategy)
         history = algo.run()

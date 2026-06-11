@@ -17,15 +17,20 @@ Usage (from any algorithm package)::
     from bioiga.shared.visualization import plot_results, plot_tf_comparison
 """
 
-from .transfer_functions import apply_transfer_function, apply_position_update
-from .binary_encoding import decode_binary_10bit
-from .migration import ring_migrate
-from .metrics import calculate_auc, calculate_convergence_speed, generate_report
-from .visualization import plot_results, plot_tf_comparison
 from .benchmarks import (
-    MathProblem, Sphere, Rastrigin, Rosenbrock,
-    FitnessStrategy, TraditionalEnv, BottleneckEnv,
+    BottleneckEnv,
+    FitnessStrategy,
+    MathProblem,
+    Rastrigin,
+    Rosenbrock,
+    Sphere,
+    TraditionalEnv,
 )
+from .binary_encoding import decode_binary_10bit
+from .metrics import calculate_auc, calculate_convergence_speed, generate_report
+from .migration import ring_migrate
+from .transfer_functions import apply_position_update, apply_transfer_function
+from .visualization import plot_results, plot_tf_comparison
 
 __all__ = [
     "apply_transfer_function",

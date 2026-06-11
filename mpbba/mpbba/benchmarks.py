@@ -1,13 +1,14 @@
-import numpy as np
 from abc import ABC, abstractmethod
-from typing import Tuple
-from .domain import Bat
-from .config import MPBBAConfig
 
+import numpy as np
+
+from .config import MPBBAConfig
+from .domain import Bat
 
 # ==========================================
 # MATHEMATICAL BENCHMARK PROBLEMS
 # ==========================================
+
 
 class MathProblem(ABC):
     """Abstract base for a mathematical benchmark function."""
@@ -21,7 +22,7 @@ class Sphere(MathProblem):
     """Sphere function: f(x) = Σ xᵢ²."""
 
     def evaluate_partial(self, genes: np.ndarray) -> float:
-        return float(np.sum(genes ** 2))
+        return float(np.sum(genes**2))
 
 
 class Rastrigin(MathProblem):
@@ -29,7 +30,7 @@ class Rastrigin(MathProblem):
 
     def evaluate_partial(self, genes: np.ndarray) -> float:
         A = 10
-        return float(A * len(genes) + np.sum(genes ** 2 - A * np.cos(2 * np.pi * genes)))
+        return float(A * len(genes) + np.sum(genes**2 - A * np.cos(2 * np.pi * genes)))
 
 
 class Rosenbrock(MathProblem):
@@ -40,12 +41,13 @@ class Rosenbrock(MathProblem):
             return 0.0
         x0 = genes[:-1]
         x1 = genes[1:]
-        return float(np.sum(100.0 * (x1 - x0 ** 2) ** 2 + (1 - x0) ** 2))
+        return float(np.sum(100.0 * (x1 - x0**2) ** 2 + (1 - x0) ** 2))
 
 
 # ==========================================
 # EVOLUTIONARY ENVIRONMENTS (FITNESS STRATEGIES)
 # ==========================================
+
 
 class FitnessStrategy(ABC):
     """
@@ -57,7 +59,7 @@ class FitnessStrategy(ABC):
         self.config = config
 
     @abstractmethod
-    def evaluate(self, bat: Bat, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, bat: Bat, current_gen: int) -> tuple[float, float, float]:
         """
         Evaluate a bat's fitness.
         """
@@ -66,7 +68,7 @@ class FitnessStrategy(ABC):
 class TraditionalEnv(FitnessStrategy):
     """Balanced selection environment."""
 
-    def evaluate(self, bat: Bat, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, bat: Bat, current_gen: int) -> tuple[float, float, float]:
         youth_err = self.problem.evaluate_partial(bat.get_youth_genes())
         late_err = self.problem.evaluate_partial(bat.get_late_genes())
         fitness = -(youth_err + late_err)
@@ -76,7 +78,7 @@ class TraditionalEnv(FitnessStrategy):
 class BottleneckEnv(FitnessStrategy):
     """Longevity Bottleneck environment."""
 
-    def evaluate(self, bat: Bat, current_gen: int) -> Tuple[float, float, float]:
+    def evaluate(self, bat: Bat, current_gen: int) -> tuple[float, float, float]:
         youth_err = self.problem.evaluate_partial(bat.get_youth_genes())
         late_err = self.problem.evaluate_partial(bat.get_late_genes())
 
@@ -91,6 +93,7 @@ class BottleneckEnv(FitnessStrategy):
 # ==========================================
 # PRE-BUILT WRAPPERS
 # ==========================================
+
 
 class SphereTraditional(TraditionalEnv):
     def __init__(self, config: MPBBAConfig = None):

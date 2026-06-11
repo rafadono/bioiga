@@ -1,7 +1,5 @@
-import pytest
-import numpy as np
-from mpga.config import MPGAConfig
 from mpga.benchmarks import SphereTraditional
+from mpga.config import MPGAConfig
 from mpga.engine import MPGAAlgorithm
 
 

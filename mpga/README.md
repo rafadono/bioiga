@@ -8,11 +8,13 @@ Specifically, it models the **Longevity Bottleneck Hypothesis** (João Pedro de 
 
 ## Installation
 
-Install as part of the BioIGA-2D suite from the repository root:
+Install as part of the BioIGA-2D suite from PyPI:
 
 ```bash
-pip install -e .
+pip install bioiga
 ```
+
+For development install, see the main repository's [README.md](../README.md).
 
 ---
 

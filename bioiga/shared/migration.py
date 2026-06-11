@@ -10,10 +10,9 @@ MPBGWOAlgorithm, MPBBAAlgorithm, MPGAAlgorithm).
 """
 
 import copy
-from typing import List
 
 
-def ring_migrate(islands: List[list], migration_rate: int) -> None:
+def ring_migrate(islands: list[list], migration_rate: int) -> None:
     """
     Ring-topology migration: copy the top ``migration_rate`` agents from
     island *i* into island *(i+1) % num_islands*, replacing its worst

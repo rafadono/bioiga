@@ -9,14 +9,13 @@ reusing the same rendering code.
 """
 
 import os
-from typing import Dict, List
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 
 def plot_results(
-    results: Dict[str, Dict[str, List[float]]],
+    results: dict[str, dict[str, list[float]]],
     config,
     output_path: str,
     label: str = "Algorithm",
@@ -60,10 +59,10 @@ def plot_results(
         fontweight="bold",
     )
 
-    colors = plt.cm.tab10(np.linspace(0, 1, max(len(results), 1)))
+    colors = plt.get_cmap("tab10")(np.linspace(0, 1, max(len(results), 1)))
 
     ax1 = axes[0]
-    for (name, history), color in zip(results.items(), colors):
+    for (name, history), color in zip(results.items(), colors, strict=False):
         ax1.plot(history["gen"], history["best_fitness"], label=name, color=color, lw=1.8)
     ax1.set_title("Best Error per Generation")
     ax1.set_xlabel("Generation")
@@ -75,17 +74,27 @@ def plot_results(
     ax2 = axes[1]
     last_name, last_history = list(results.items())[-1]
     ax2.plot(
-        last_history["gen"], last_history["youth_error"],
-        label="Youth genes", color="royalblue", lw=1.8,
+        last_history["gen"],
+        last_history["youth_error"],
+        label="Youth genes",
+        color="royalblue",
+        lw=1.8,
     )
     ax2.plot(
-        last_history["gen"], last_history["late_error"],
-        label="Late genes", color="tomato", lw=1.8, linestyle="--",
+        last_history["gen"],
+        last_history["late_error"],
+        label="Late genes",
+        color="tomato",
+        lw=1.8,
+        linestyle="--",
     )
 
     if hasattr(config, "asteroid_gen"):
         ax2.axvline(
-            config.asteroid_gen, color="gray", linestyle=":", lw=1.5,
+            config.asteroid_gen,
+            color="gray",
+            linestyle=":",
+            lw=1.5,
             label=f"Asteroid (gen {config.asteroid_gen})",
         )
 
@@ -102,7 +111,7 @@ def plot_results(
 
 
 def plot_tf_comparison(
-    tf_results: Dict[str, Dict[str, List[float]]],
+    tf_results: dict[str, dict[str, list[float]]],
     output_path: str,
     label: str = "Algorithm",
 ) -> None:
@@ -130,9 +139,9 @@ def plot_tf_comparison(
     axes = np.array(axes).flatten()
     fig.suptitle(f"{label} - Transfer Function Comparison (S / V / U / Z)", fontsize=13)
 
-    colors = plt.cm.Set2(np.linspace(0, 1, max(n, 1)))
+    colors = plt.get_cmap("Set2")(np.linspace(0, 1, max(n, 1)))
 
-    for idx, ((lbl, history), color) in enumerate(zip(tf_results.items(), colors)):
+    for idx, ((lbl, history), color) in enumerate(zip(tf_results.items(), colors, strict=False)):
         ax = axes[idx]
         ax.plot(history["gen"], history["best_fitness"], color=color, lw=1.8)
         ax.set_title(lbl, fontsize=9)
@@ -142,8 +151,11 @@ def plot_tf_comparison(
         ax.grid(True, alpha=0.3, linestyle="--")
         final_err = history["best_fitness"][-1]
         ax.annotate(
-            f"Final: {final_err:.4f}", xy=(0.97, 0.93),
-            xycoords="axes fraction", ha="right", fontsize=7,
+            f"Final: {final_err:.4f}",
+            xy=(0.97, 0.93),
+            xycoords="axes fraction",
+            ha="right",
+            fontsize=7,
             bbox=dict(boxstyle="round,pad=0.2", fc="white", alpha=0.8),
         )
 

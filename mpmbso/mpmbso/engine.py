@@ -36,13 +36,13 @@ shapes (S, V, U, Z) and their update rules.
 """
 
 import numpy as np
-from typing import Dict, List
 
+from bioiga.shared.migration import ring_migrate
+from bioiga.shared.transfer_functions import apply_position_update, apply_transfer_function
+
+from .benchmarks import FitnessStrategy
 from .config import MPMBPSOConfig
 from .domain import Particle
-from .benchmarks import FitnessStrategy
-from bioiga.shared.transfer_functions import apply_transfer_function, apply_position_update
-from bioiga.shared.migration import ring_migrate
 
 
 class MPMBPSOAlgorithm:
@@ -62,20 +62,18 @@ class MPMBPSOAlgorithm:
         self.fitness_strategy = fitness_strategy
 
         # Initialize islands: list of lists of Particle objects
-        self.islands: List[List[Particle]] = [
-            [Particle(config) for _ in range(config.pop_size)]
-            for _ in range(config.num_islands)
+        self.islands: list[list[Particle]] = [
+            [Particle(config) for _ in range(config.pop_size)] for _ in range(config.num_islands)
         ]
 
         # Per-island global best (gbest)
-        self.gbest_positions: List[np.ndarray] = [
-            np.random.randint(0, 2, config.num_variables)
-            for _ in range(config.num_islands)
+        self.gbest_positions: list[np.ndarray] = [
+            np.random.randint(0, 2, config.num_variables) for _ in range(config.num_islands)
         ]
-        self.gbest_fitnesses: List[float] = [-float("inf")] * config.num_islands
+        self.gbest_fitnesses: list[float] = [-float("inf")] * config.num_islands
 
         # Convergence history (aggregated across all islands)
-        self.history: Dict[str, List[float]] = {
+        self.history: dict[str, list[float]] = {
             "gen": [],
             "best_fitness": [],
             "youth_error": [],
@@ -152,7 +150,7 @@ class MPMBPSOAlgorithm:
     # PUBLIC RUN METHOD
     # ------------------------------------------------------------------
 
-    def run(self) -> Dict[str, List[float]]:
+    def run(self) -> dict[str, list[float]]:
         """
         Execute the full MPMBPSO optimization run.
 
@@ -167,7 +165,6 @@ class MPMBPSOAlgorithm:
             }``
         """
         for gen in range(self.config.generations):
-
             # Age tracking and mortality (parity feature)
             for island in self.islands:
                 for p in island:

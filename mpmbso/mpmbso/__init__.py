@@ -19,27 +19,29 @@ Single-swarm mode (disable migration)::
     config = MPMBPSOConfig(num_islands=1)
 """
 
+from .benchmarks import (
+    BottleneckEnv,
+    FitnessStrategy,
+    MathProblem,
+    Rastrigin,
+    RastriginTraditional,
+    Rosenbrock,
+    RosenbrockTraditional,
+    Sphere,
+    SphereMutationAccumulation,
+    SphereTraditional,
+    TraditionalEnv,
+)
 from .config import MPMBPSOConfig
 from .domain import Particle
 from .engine import MPMBPSOAlgorithm
-from .benchmarks import (
-    MathProblem,
-    Sphere,
-    Rastrigin,
-    Rosenbrock,
-    FitnessStrategy,
-    TraditionalEnv,
-    BottleneckEnv,
-    SphereTraditional,
-    SphereMutationAccumulation,
-    RastriginTraditional,
-    RosenbrockTraditional,
-)
 from .metrics import MPMBPSOMetricsEvaluator
 from .visualization import plot_results, plot_tf_comparison
 
 try:
-    from importlib.metadata import version as _version, PackageNotFoundError as _PNFError
+    from importlib.metadata import PackageNotFoundError as _PNFError
+    from importlib.metadata import version as _version
+
     __version__ = _version("mpmbso")
     del _version, _PNFError
 except Exception:

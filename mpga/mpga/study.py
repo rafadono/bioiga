@@ -1,21 +1,19 @@
 import os
+
 import optuna
 import pandas as pd
+
+from .benchmarks import BottleneckEnv, Rastrigin, Rosenbrock, Sphere, TraditionalEnv
 from .config import MPGAConfig
-from .benchmarks import Sphere, Rastrigin, Rosenbrock, TraditionalEnv, BottleneckEnv
 from .engine import MPGAAlgorithm
 
 
 def create_catalog():
-    problems = {
-        "Sphere": Sphere(),
-        "Rastrigin": Rastrigin(),
-        "Rosenbrock": Rosenbrock()
-    }
+    problems = {"Sphere": Sphere(), "Rastrigin": Rastrigin(), "Rosenbrock": Rosenbrock()}
 
     environments = {
         "Traditional": lambda prob, cfg: TraditionalEnv(prob, cfg),
-        "Bottleneck": lambda prob, cfg: BottleneckEnv(prob, cfg)
+        "Bottleneck": lambda prob, cfg: BottleneckEnv(prob, cfg),
     }
 
     return problems, environments
@@ -32,7 +30,7 @@ def run_optuna_for_scenario(problem_name, problem_obj, env_name, env_factory, n_
             mutation_rate=mutation_rate,
             crossover_rate=crossover_rate,
             generations=200,
-            asteroid_gen=100
+            asteroid_gen=100,
         )
 
         strategy = env_factory(problem_obj, config)
@@ -46,11 +44,11 @@ def run_optuna_for_scenario(problem_name, problem_obj, env_name, env_factory, n_
     study = optuna.create_study(direction="minimize")
     study.optimize(objective, n_trials=n_trials)
 
-    df_trials = study.trials_dataframe(attrs=('number', 'value', 'params', 'state'))
-    df_trials = df_trials[df_trials['state'] == 'COMPLETE'].copy()
+    df_trials = study.trials_dataframe(attrs=("number", "value", "params", "state"))
+    df_trials = df_trials[df_trials["state"] == "COMPLETE"].copy()
 
-    df_trials['benchmark_problem'] = problem_name
-    df_trials['evolutionary_model'] = env_name
+    df_trials["benchmark_problem"] = problem_name
+    df_trials["evolutionary_model"] = env_name
 
     return df_trials
 
@@ -72,7 +70,9 @@ def main():
     master_df = pd.concat(all_results, ignore_index=True)
 
     cols = master_df.columns.tolist()
-    cols = ['benchmark_problem', 'evolutionary_model', 'number', 'value'] + [c for c in cols if c.startswith('params')]
+    cols = ["benchmark_problem", "evolutionary_model", "number", "value"] + [
+        c for c in cols if c.startswith("params")
+    ]
     master_df = master_df[cols]
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

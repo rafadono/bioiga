@@ -1,6 +1,6 @@
 # `mpmbso` — Multi-Population Modified Binary PSO
 
-[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org)
+[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](../LICENSE)
 
 `mpmbso` implements **MPMBPSO** (Multi-Population Modified Binary Particle Swarm Optimization) — a multi-island Binary PSO using the V-shape transfer function $T(v) = \vert\tanh(v)\vert$. It is part of the **BioIGA-2D** suite and designed to study binary PSO convergence behavior across transfer function families (S, V, U, Z) in both single-population and multi-island modes.
@@ -11,11 +11,13 @@ The algorithm equations are taken from the **master's thesis of Rafael Inostroza
 
 ## Installation
 
-Install as part of the BioIGA-2D suite from the repository root:
+Install as part of the BioIGA-2D suite from PyPI:
 
 ```bash
-pip install -e .
+pip install bioiga
 ```
+
+For development install, see the main repository's [README.md](../README.md).
 
 ---
 

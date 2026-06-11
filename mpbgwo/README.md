@@ -6,11 +6,13 @@ Multi-Population Binary Grey Wolf Optimizer (MPBGWO) for discrete and binary opt
 
 ## Installation
 
-Install as part of the BioIGA-2D suite from the repository root:
+Install as part of the BioIGA-2D suite from PyPI:
 
 ```bash
-pip install -e .
+pip install bioiga
 ```
+
+For development install, see the main repository's [README.md](../README.md).
 
 ---
 

@@ -1,7 +1,5 @@
-import pytest
-import numpy as np
-from mpbgwo.config import MPBGWOConfig
 from mpbgwo.benchmarks import Sphere, TraditionalEnv
+from mpbgwo.config import MPBGWOConfig
 from mpbgwo.engine import MPBGWOAlgorithm
 
 
@@ -42,5 +40,5 @@ def test_mortality_and_culling_dont_crash():
     strategy = TraditionalEnv(Sphere(), config)
     algo = MPBGWOAlgorithm(config, strategy)
     history = algo.run()
-    
+
     assert len(history["best_fitness"]) == 3

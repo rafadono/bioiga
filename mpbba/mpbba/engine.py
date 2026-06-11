@@ -1,12 +1,11 @@
-import copy
 import numpy as np
-from typing import Dict, List, Tuple
 
-from .transfer_functions import apply_transfer_function, apply_position_update
+from bioiga.shared.migration import ring_migrate
+
+from .benchmarks import FitnessStrategy
 from .config import MPBBAConfig
 from .domain import Bat
-from .benchmarks import FitnessStrategy
-from bioiga.shared.migration import ring_migrate
+from .transfer_functions import apply_position_update, apply_transfer_function
 
 
 class MPBBAAlgorithm:
@@ -19,20 +18,19 @@ class MPBBAAlgorithm:
         self.fitness_strategy = fitness_strategy
 
         # Initialize islands: list of lists of Bat objects
-        self.islands: List[List[Bat]] = [
-            [Bat(config) for _ in range(config.pop_size)]
-            for _ in range(config.num_islands)
+        self.islands: list[list[Bat]] = [
+            [Bat(config) for _ in range(config.pop_size)] for _ in range(config.num_islands)
         ]
 
         # Metrics history
-        self.history: Dict[str, List[float]] = {
+        self.history: dict[str, list[float]] = {
             "gen": [],
             "best_fitness": [],
             "youth_error": [],
             "late_error": [],
         }
 
-    def _evaluate_island(self, island: List[Bat], gen: int) -> None:
+    def _evaluate_island(self, island: list[Bat], gen: int) -> None:
         """Evaluate fitness for all bats on a single island."""
         for bat in island:
             fit, y_err, l_err = self.fitness_strategy.evaluate(bat, gen)
@@ -40,7 +38,7 @@ class MPBBAAlgorithm:
             bat.youth_error = y_err
             bat.late_error = l_err
 
-    def _evolve_island(self, island: List[Bat], gen: int) -> None:
+    def _evolve_island(self, island: list[Bat], gen: int) -> None:
         """
         Run one generation of Binary Bat Algorithm on a single island.
         """
@@ -84,15 +82,19 @@ class MPBBAAlgorithm:
             cand_fit, cand_y_err, cand_l_err = self.fitness_strategy.evaluate(scratch_bat, gen)
 
             # Acceptance criteria: if candidate is better and within loudness threshold
-            if (cand_fit >= bat.fitness or np.random.rand() < 0.1) and np.random.rand() < bat.loudness:
+            if (
+                cand_fit >= bat.fitness or np.random.rand() < 0.1
+            ) and np.random.rand() < bat.loudness:
                 bat.position = pos_new
                 bat.fitness = cand_fit
                 bat.youth_error = cand_y_err
                 bat.late_error = cand_l_err
-                
+
                 # Update loudness and pulse rate
                 bat.loudness *= self.config.alpha_ba
-                bat.pulse_rate = 1.0 - (1.0 - self.config.r_initial) * np.exp(-self.config.gamma_ba * gen)
+                bat.pulse_rate = 1.0 - (1.0 - self.config.r_initial) * np.exp(
+                    -self.config.gamma_ba * gen
+                )
 
     def _migrate(self) -> None:
         """
@@ -101,10 +103,9 @@ class MPBBAAlgorithm:
         """
         ring_migrate(self.islands, self.config.migration_rate)
 
-    def run(self) -> Dict[str, List[float]]:
+    def run(self) -> dict[str, list[float]]:
         """Run the full MPBBA optimization."""
         for gen in range(self.config.generations):
-
             # Increment age and apply age mortality (Parity feature)
             for island in self.islands:
                 for bat in island:
@@ -128,14 +129,14 @@ class MPBBAAlgorithm:
             all_bats = [b for island in self.islands for b in island]
             best = max(all_bats, key=lambda b: b.fitness)
             self.history["gen"].append(gen)
-            self.history["best_fitness"].append(-best.fitness)   # positive error for plots
+            self.history["best_fitness"].append(-best.fitness)  # positive error for plots
             self.history["youth_error"].append(best.youth_error)
             self.history["late_error"].append(best.late_error)
 
             # Environmental culling per island (Parity feature)
             if self.config.use_environmental_culling:
                 for island in self.islands:
-                    island.sort(key=lambda b: b.fitness) # worst first
+                    island.sort(key=lambda b: b.fitness)  # worst first
                     num_cull = int(self.config.pop_size * self.config.culling_rate)
                     for i in range(num_cull):
                         island[i].reset()
@@ -146,7 +147,9 @@ class MPBBAAlgorithm:
                 # Apply post-evolution mutation (Parity feature)
                 if self.config.mutation_rate > 0.0:
                     for bat in island:
-                        mut_mask = np.random.rand(self.config.num_variables) < self.config.mutation_rate
+                        mut_mask = (
+                            np.random.rand(self.config.num_variables) < self.config.mutation_rate
+                        )
                         bat.position[mut_mask] = 1 - bat.position[mut_mask]
 
         return self.history

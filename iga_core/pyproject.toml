@@ -7,8 +7,8 @@ name = "iga-core"
 version = "0.2.0"
 description = "Isogeometric Analysis (IGA) 2D core package with Rust-optimized backend"
 readme = "README.md"
-requires-python = ">=3.8"
-license = { file = "LICENSE" }
+requires-python = ">=3.12"
+license = { text = "MIT" }
 authors = [
     { name = "Rafael Inostroza" }
 ]

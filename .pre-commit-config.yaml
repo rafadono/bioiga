@@ -27,4 +27,4 @@ repos:
       - id: mypy
         additional_dependencies: [numpy]
         args: [--ignore-missing-imports, --no-strict-optional]
-        files: ^(mpmbso|mpga|mpbfa|mpbgwo|mpbba)/.*\.py$
+        files: ^(mpmbso/mpmbso|mpga/mpga|mpbfa/mpbfa|mpbgwo/mpbgwo|mpbba/mpbba)/.*\.py$
