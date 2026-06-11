@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+*.dylib
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+*.egg
+wheels/
+sdist/
+
+# Rust / Maturin
+target/
+Cargo.lock
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# pytest cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Optuna databases
+*.db
+optuna_*.sqlite
+
+# Output artefacts produced by algorithms
+**/output/
+**/resultados/
+
+# Type-checking caches
+.mypy_cache/
+.pyright/

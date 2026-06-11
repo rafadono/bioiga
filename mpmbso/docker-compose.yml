@@ -1,0 +1,30 @@
+services:
+  # 1. Servicio principal (Comparación base de los algoritmos)
+  sim:
+    build: .
+    image: mbpso-benchmark-image
+    volumes:
+      - ./output:/app/output
+    command: python src/main.py
+
+  # 2. Servicio de Optimización Bayesiana (Grid Search inteligente)
+  study:
+    build: .
+    image: mbpso-benchmark-image
+    volumes:
+      - ./output:/app/output
+    command: python src/study.py
+
+  # 3. Servicio de Análisis de Datos (Generación de gráficos)
+  analysis:
+    build: .
+    image: mbpso-benchmark-image
+    volumes:
+      - ./output:/app/output
+    command: python src/analysis.py
+
+  # 4. Servicio para ejecutar las pruebas unitarias
+  tests:
+    build: .
+    image: mbpso-benchmark-image
+    command: pytest tests/ -v

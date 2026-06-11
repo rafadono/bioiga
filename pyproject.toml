@@ -1,0 +1,161 @@
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bioiga"
+version = "0.2.0"
+description = "BioIGA-2D: Evolutionary IGA Suite — MPMBPSO, MPGA, MPBFA, MPBGWO, MPBBA"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Rafael Inostroza" }
+]
+keywords = [
+    "isogeometric-analysis", "IGA", "NURBS", "topology-optimization",
+    "genetic-algorithm", "particle-swarm", "bandgap", "metamaterials",
+    "structural-optimization", "phononic-crystals",
+    "binary-pso", "firefly-algorithm", "grey-wolf", "bat-algorithm",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+dependencies = [
+    "iga-core>=0.2.0",
+    "numpy>=1.26.4",
+    "matplotlib>=3.8.2",
+    "optuna>=3.5.0",
+    "pandas>=2.2.0",
+    "seaborn>=0.13.2",
+    "scipy>=1.12.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.4.0",
+    "mypy>=1.0",
+    "pre-commit>=3.0",
+    "build>=1.0",
+    "twine>=5.0",
+    "maturin>=1.0",
+]
+
+[project.urls]
+Homepage      = "https://github.com/rafaelinostroza/bioiga"
+Repository    = "https://github.com/rafaelinostroza/bioiga"
+Documentation = "https://github.com/rafaelinostroza/bioiga#readme"
+Changelog     = "https://github.com/rafaelinostroza/bioiga/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/rafaelinostroza/bioiga/issues"
+
+# ---------------------------------------------------------------------------
+# Suite-only install: pip install -e . from project root installs ALL packages
+# ---------------------------------------------------------------------------
+[tool.setuptools]
+packages = [
+    "bioiga",
+    "bioiga.shared",
+    "mpmbso",
+    "mpga",
+    "mpbfa",
+    "mpbgwo",
+    "mpbba",
+]
+
+[tool.setuptools.package-dir]
+""       = "."           # bioiga lives at ./bioiga/
+"mpmbso" = "mpmbso/mpmbso"
+"mpga"   = "mpga/mpga"
+"mpbfa"  = "mpbfa/mpbfa"
+"mpbgwo" = "mpbgwo/mpbgwo"
+"mpbba"  = "mpbba/mpbba"
+
+[tool.setuptools.package-data]
+"*" = ["py.typed"]       # Include py.typed markers in wheels
+
+# ---------------------------------------------------------------------------
+# Pytest
+# ---------------------------------------------------------------------------
+[tool.pytest.ini_options]
+addopts = "--import-mode=importlib"
+
+# ---------------------------------------------------------------------------
+# Ruff — linter + formatter (replaces flake8, black, isort)
+# ---------------------------------------------------------------------------
+[tool.ruff]
+target-version = "py38"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes (unused imports, undefined names)
+    "I",   # isort (import ordering)
+    "N",   # pep8-naming
+    "UP",  # pyupgrade (modernize syntax)
+    "B",   # flake8-bugbear (likely bugs)
+]
+ignore = [
+    "E501",  # line-too-long — handled by formatter
+    "N803",  # argument name should be lowercase — numpy uses K, M, F for matrices
+    "N806",  # variable in function should be lowercase — same reason
+    "B008",  # do not perform function calls in default argument values
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["bioiga", "mpmbso", "mpga", "mpbfa", "mpbgwo", "mpbba", "iga_core"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
+
+# ---------------------------------------------------------------------------
+# Mypy — static type checking
+# ---------------------------------------------------------------------------
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = true
+ignore_missing_imports = true   # Needed for Rust extensions (iga_rust)
+disallow_untyped_defs = false   # Research code — relax to allow gradual typing
+check_untyped_defs = true
+no_implicit_optional = true
+
+# ---------------------------------------------------------------------------
+# Coverage
+# ---------------------------------------------------------------------------
+[tool.coverage.run]
+source = ["bioiga", "mpmbso", "mpga", "mpbfa", "mpbgwo", "mpbba"]
+omit = [
+    "*/tests/*",
+    "*/main.py",        # CLI entry points — tested manually
+    "*/study.py",       # Optuna studies — require long runtimes
+    "*/analysis.py",
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+fail_under = 60         # CI fails if overall coverage drops below 60%
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "\\.\\.\\.",         # Ellipsis stubs
+]

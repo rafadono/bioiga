@@ -1,0 +1,32 @@
+version: 2
+updates:
+  # Python dependencies — checks root pyproject.toml and all sub-package pyproject.toml files
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      scientific:
+        patterns: ["numpy", "scipy", "matplotlib", "pandas", "seaborn"]
+      testing:
+        patterns: ["pytest*", "coverage*", "codecov*"]
+      tooling:
+        patterns: ["ruff", "mypy", "maturin", "build", "twine", "pre-commit"]
+    open-pull-requests-limit: 5
+
+  # GitHub Actions — keeps action versions up to date
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+
+  # Rust / Cargo dependencies in iga_core
+  - package-ecosystem: "cargo"
+    directory: "/iga_core"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3

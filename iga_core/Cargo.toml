@@ -1,0 +1,12 @@
+[package]
+name = "iga_rust"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "iga_rust"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.22.2", features = ["extension-module"] }
+# Any other dependencies if needed, but the original only had pyo3.

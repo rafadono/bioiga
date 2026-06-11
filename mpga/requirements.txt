@@ -1,0 +1,7 @@
+The following code has been modified to include a line number before every line, in the format: <line_number>: <original_line>. Please note that any changes targeting the original code should remove the line number, colon, and leading space.
+numpy==1.26.4
+matplotlib==3.8.2
+pytest==8.0.0
+optuna==3.5.0
+pandas==2.2.0
+seaborn==0.13.2
