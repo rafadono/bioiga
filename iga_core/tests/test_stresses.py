@@ -72,9 +72,9 @@ def test_square_plate_tension():
     print(f"Mean stress in the center: {mean_center_stress / 1e6:.2f} MPa")
 
     # 1% tolerance
-    assert np.isclose(
-        mean_center_stress, sigma_0, rtol=0.01
-    ), f"Mean stress {mean_center_stress} does not match expected value {sigma_0}"
+    assert np.isclose(mean_center_stress, sigma_0, rtol=0.01), (
+        f"Mean stress {mean_center_stress} does not match expected value {sigma_0}"
+    )
 
 
 def test_circular_hole_stress_concentration():
@@ -173,9 +173,9 @@ def test_circular_hole_stress_concentration():
 
     # Theoretical SCF is 3.0. With our 18x18 bilinear grid, we should get a close
     # approximation (typically between 2.7 and 3.1)
-    assert (
-        2.5 <= stress_concentration_factor <= 3.3
-    ), f"Calculated SCF {stress_concentration_factor:.4f} is outside the acceptable range relative to theoretical (3.0)"
+    assert 2.5 <= stress_concentration_factor <= 3.3, (
+        f"Calculated SCF {stress_concentration_factor:.4f} is outside the acceptable range relative to theoretical (3.0)"
+    )
 
 
 def test_bracket_stresses():
