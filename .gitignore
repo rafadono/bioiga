@@ -57,3 +57,7 @@ optuna_*.sqlite
 
 # Thesis PDF
 Optimizacion-topologica-en-placas-cuadradas-y-comparacion-entre-algoritmos-de-optimizacion-MPGA-y-MBPSO-aplicados-a-metodos-IGA-y-FEA.pdf
+
+# CodeGraph
+.codegraph/*
+!.codegraph/.gitignore
