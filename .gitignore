@@ -1,63 +1,68 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
+*.pyo
 *.pyd
-*.so
-*.dylib
-
-# Distribution / build
-dist/
-build/
-*.egg-info/
-*.egg
-wheels/
-sdist/
-
-# Rust / Maturin
-target/
-Cargo.lock
-
-# Virtual environments
-.venv/
-venv/
-env/
-.env
-
-# pytest cache
 .pytest_cache/
 .coverage
 htmlcov/
+*.egg-info/
+dist/
+build/
+.venv/
+env/
+venv/
 
-# IDE
+# Rust Build Artifacts & Metadata
+target/
+*.rmeta
+*.rlib
+
+# Node.js / Vue 3
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# BioIGA Persistence & Local Data
+.bioiga_projects/
+.bioiga_materials/
+*.log
+scratch*.*
+*.scratch
+*.tmp
+*.temp
+*.bak
+*.swp
+
+# Algorithm Simulation Outputs
+output/
+mpbba/output/
+mpbfa/output/
+mpbgwo/output/
+mpmbso/output/
+mpga/output/
+
+# Generated Plots, Images, CAD & Figures
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.dxf
+*.pkl
+*.pdf
+*_res.json
+sweep*.json
+sample_*.json
+plots/
+figures/
+*.plots/
+
+
+# IDE & OS
 .vscode/
 .idea/
-*.sublime-project
-*.sublime-workspace
-
-# OS
 .DS_Store
 Thumbs.db
-
-# Jupyter
-.ipynb_checkpoints/
-*.ipynb
-
-# Optuna databases
-*.db
-optuna_*.sqlite
-
-# Output artefacts produced by algorithms
-**/output/
-**/resultados/
-
-# Type-checking caches
-.mypy_cache/
-.pyright/
-
-# Thesis PDF
-Optimizacion-topologica-en-placas-cuadradas-y-comparacion-entre-algoritmos-de-optimizacion-MPGA-y-MBPSO-aplicados-a-metodos-IGA-y-FEA.pdf
-
-# CodeGraph
-.codegraph/*
-!.codegraph/.gitignore

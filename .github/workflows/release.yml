@@ -27,14 +27,14 @@ jobs:
         run: ruff check .
 
   # ---------------------------------------------------------------------------
-  # 2. Test suite + coverage
+  # 2. Test suite + coverage + Frontend Build
   # ---------------------------------------------------------------------------
   test:
-    name: Tests (Python ${{ matrix.python-version }})
+    name: Tests (Python ${{ matrix.python-version }}) & Frontend Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.12']
+        python-version: ['3.12', '3.13']
     steps:
       - uses: actions/checkout@v4
 
@@ -42,21 +42,33 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Set up Node.js for Frontend
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Vue 3 Frontend
+        run: |
+          cd frontend
+          npm ci
+          npm run build
+
       - name: Set up Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install maturin and build iga-core
         run: |
           python -m pip install --upgrade pip
-          pip install maturin pytest pytest-cov numpy scipy matplotlib optuna pandas seaborn
+          pip install maturin pytest pytest-cov numpy scipy matplotlib optuna pandas seaborn fastapi uvicorn websockets pydantic ezdxf
           pip install -e ./iga_core
 
       - name: Install suite in editable mode
         run: pip install -e .
 
-      - name: Run tests with coverage
+      - name: Run complete test suite and 13 paper benchmarks
         run: |
-          python -m pytest --cov --cov-report=xml --cov-report=term-missing
+          python -m pytest iga_core/tests/ bioiga/tests/ --cov --cov-report=xml --cov-report=term-missing
+          python -m bioiga.cli benchmark-paper 0
 
       - name: Upload coverage report
         uses: codecov/codecov-action@v4
@@ -64,6 +76,7 @@ jobs:
         with:
           files: coverage.xml
           fail_ci_if_error: false              # Don't break CI if Codecov is down
+
 
   # ---------------------------------------------------------------------------
   # 3. Type checking (mypy)
@@ -77,7 +90,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install mypy and stubs
-        run: pip install mypy numpy
+        run: pip install mypy numpy pydantic ezdxf
+
       - name: Run mypy
         # Check each pure-Python package; iga_core has Rust so ignore-missing-imports
         run: |

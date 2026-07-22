@@ -27,12 +27,35 @@ from .benchmarks import (
     TraditionalEnv,
 )
 from .binary_encoding import decode_binary_10bit
+from .callbacks import CallbackType, GenerationEvent, ProgressCallback
+from .materials import (
+    DEFAULT_MATERIALS,
+    MaterialProperties,
+    delete_custom_material,
+    get_all_materials,
+    save_custom_material,
+)
 from .metrics import calculate_auc, calculate_convergence_speed, generate_report
 from .migration import ring_migrate
+from .normalization import (
+    adimensionalize_force,
+    adimensionalize_frequency,
+    adimensionalize_stress,
+    min_max_scale,
+    z_score_standardize,
+)
 from .transfer_functions import apply_position_update, apply_transfer_function
 from .visualization import plot_results, plot_tf_comparison
 
 __all__ = [
+    "CallbackType",
+    "GenerationEvent",
+    "ProgressCallback",
+    "adimensionalize_frequency",
+    "adimensionalize_force",
+    "adimensionalize_stress",
+    "min_max_scale",
+    "z_score_standardize",
     "apply_transfer_function",
     "apply_position_update",
     "decode_binary_10bit",

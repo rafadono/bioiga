@@ -1,272 +1,106 @@
-# BioIGA-2D — Evolutionary Isogeometric Optimization Suite
+# BioIGA-2D — Suite de Optimización Isogeométrica y Dinámica Estructural
 
-[![Python](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org)
-[![Rust](https://img.shields.io/badge/rust-pyo3-orange)](https://pyo3.rs)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-
-**BioIGA-2D** is a monorepo suite combining **Isogeometric Analysis (IGA)** structural mechanics with six evolutionary metaheuristics for binary and topology optimization research. Install everything with a single command.
+**BioIGA-2D** es una suite científica moderna para la optimización topológica, de forma y de tamaño en estructuras 2D utilizando **Análisis Isogeométrico (IGA)**, motor nativo acelerado en **C/Rust + Rayon Multi-Core**, metaheurísticas binarias multipoblacionales (**MPMBPSO**, **MPGA**, **MPBFA**, **MPBGWO**, **MPBBA**), suite CAD interactiva con navegación completa, barras laterales colapsables, diseño adaptativo responsivo y modelos de la **Frontera del Conocimiento (2024–2026)**.
 
 ---
 
-## Installation
+## 1. Arquitectura del Sistema en 3 Capas
 
-Install the stable suite from PyPI:
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│  CAPA 3: INTERFAZ GRÁFICA Y NAVEGACIÓN VISUAL (Vue 3, Vite, Chart.js)   │
+│  - Viewport CAD 2D con Zoom (Rueda/Botones), Pan, Fit y Drag & Drop     │
+│  - Barras laterales colapsables hacia la izquierda (Máximo Canvas CAD)  │
+│  - Diseño 100% Adaptativo Responsivo (Desktop, Laptop, Tablet, Mobile)  │
+│  - Gestor de Recortes Multi-Orificios (Trimmed NURBS / Cut-FEM)         │
+│  - Edición de Coordenadas por Tabla (X,Y,W) e Importación/Exportación DXF│
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ (WebSockets & REST API)
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  CAPA 2: FRAMEWORK DE CONTROL Y TRABAJO (FastAPI, WebSockets, Worker)   │
+│  - Coordinación de 5 algoritmos evolutivos (MPMBPSO, MPGA, MPBFA, etc.)│
+│  - Persistencia de proyectos en formato ABIERTO JSON (.bioiga.json)     │
+│  - CLI Avanzado para ejecución headless y 13 benchmarks de literatura   │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │ (Cálculos Mecánicos IGA)
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│  CAPA 1: LIBRERÍA CIENTÍFICA ACELERADA EN RUST (iga_core, iga_rust)     │
+│  - Evaluación IGA ultrarrápida en Rust Nativo + Rayon Multi-Core         │
+│  - Quadtree Sub-cell Integration (Trimmed NURBS e Immersed Boundary)   │
+│  - k-Refinement, T-Splines, Placas Laminadas ABD y FGM                │
+│  - Dinámica Estructural (FRF, Newmark-β, Pandeo, PBC, Piezoeléctricos)  │
+│  - Fractura Campo de Fase, Level Set Method (LSM) y Geo-FNO            │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 2. Guía de Usuario — Interfaz Web (Vue 3)
+
+### Navegación en 3 Bloques Lógicos
+1. **DEFINICIÓN ESTRUCTURAL (Azul)**:
+   - **Geometría & Nudos**:
+     - *1. Modelado CAD & Recortes*: Presets de dominio (Rectángulo, Disco, L), Herramientas de Trazado Directo (`Trazar Polígono`, `Trazar Caja`, `Mover Vértices`), Auto-Adaptador de Red NURBS y Gestor Interactivo Multi-Orificios Trimmed NURBS (Círculos, Elipses, Rectángulos con manillares de arrastre directo en canvas).
+     - *2. Refinamiento NURBS & Coordenadas*: Grados $p, q$, inserción de nudos $U/V$, tabla editable de coordenadas $(X, Y, W)$ y exportación CSV.
+     - *Viewport CAD 2D*: Navegación CAD completa (**Zoom In/Out**, **Pan**, **Fit Centrar**, **Mouse Wheel Zoom**), arrastre de puntos de control (*Drag & Drop*), rejilla magnética (*Grid Snap*), coordenadas del cursor en tiempo real e importación/exportación **DXF 2D** y **SVG Vectorial**.
+     - *Barra Colapsable*: Botón `<` / `>` para replegar el panel lateral y maximizar el área de trabajo del canvas.
+   - **Materiales**: Catálogo predeterminado (Acero A36, Aluminio 6061-T6, Titanio, Cerámica, Carbon-Epoxy) y apilador de laminados compuestos.
+   - **Cargas y Apoyos**: Condiciones Dirichlet (Fijo, Cantilever, Simplemente Apoyado), Opción *Sin Soporte Dirichlet* (Borde Libre / Modos Libres / Cristales Fonónicos), Condiciones Periódicas (PBC) y Cargas Puntuales/Distribuidas Neumann activables por interruptor.
+
+2. **MODOS DE SIMULACIÓN Y CÁLCULO (Verde)**:
+   - **Modo A (Directo Standalone)**: Evaluación inmediata de frecuencias propias ($\omega_n$), respuesta armónica FRF y carga crítica de pandeo ($\lambda_{\text{cr}}$).
+   - **Modo B (Optimizador SIMP)**: Bucle evolutivo multipoblacional (**MPMBPSO**, **MPGA**, **MPBFA**, **MPBGWO**, **MPBBA**) con barra lateral colapsable y controles en filas independientes de ancho completo.
+
+3. **INVESTIGACIÓN Y PROYECTOS (Púrpura)**:
+   - **Ciencia & Pareto**: Lanzador de **13 Benchmarks Académicos Publicados**, $k$-Refinement, laminados ABD, FGM y Frente de Pareto 2D.
+   - **Frontera (2024–2026)**: Módulos Piezoeléctricos, Campo de Fase, Level Set Method y Geo-FNO.
+   - **Proyectos**: Abrir, guardar y exportar en JSON (`.bioiga.json`).
+
+---
+
+## 3. Interfaz de Línea de Comandos (CLI `bioiga-cli`)
+
+Para investigación, ejecuciones masivas en servidor o automatización de scripts:
 
 ```bash
-pip install bioiga
-```
+# 1. Información del Sistema y Estado del Motor Nativo
+python -m bioiga.cli info
 
-This installs all packages as a single `bioiga` suite:
+# 2. Análisis Numérico Directo Standalone
+python -m bioiga.cli solve --type vibrations --mesh-size 15 --out solve_res.json
+python -m bioiga.cli solve --type composite --layers 500 --out composite_res.json
 
-| Package | Algorithm | Description |
-|---|---|---|
-| [`iga_core`](iga_core/README.md) | IGA + MpGA + MS-MPMBPSO | Structural analysis & topology optimization |
-| [`mpmbso`](mpmbso/README.md) | MPMBPSO | Multi-Population Modified Binary PSO |
-| [`mpga`](mpga/README.md) | MPGA | Multi-Population Genetic Algorithm |
-| [`mpbfa`](mpbfa/README.md) | MPBFA | Multi-Population Binary Firefly Algorithm |
-| [`mpbgwo`](mpbgwo/README.md) | MPBGWO | Multi-Population Binary Grey Wolf Optimizer |
-| [`mpbba`](mpbba/README.md) | MPBBA | Multi-Population Binary Bat Algorithm |
+# 3. Barridos Paramétricos Masivos (Mesh Size, Capas Laminadas)
+python -m bioiga.cli sweep --param mesh_size --min 5 --max 25 --steps 5 --out sweep_mesh.json
 
-All packages share common utilities via `bioiga.shared` (transfer functions, binary encoding, ring migration, metrics, visualization).
+# 4. Optimización Evolutiva Headless
+python -m bioiga.cli optimize proyecto.json --algorithm MPGA --generations 50 --out opt_res.json
 
----
+# 5. Ejecución de Benchmarks Académicos Publicados (1 a 13 o 0 para TODOS)
+python -m bioiga.cli benchmark-paper 0
 
-## Repository Structure
-
-```
-bioiga/                             ← monorepo root
-│
-├── pyproject.toml                  ← "bioiga" meta-package (single install)
-├── README.md                       ← this file
-│
-├── bioiga/                         ← meta-package entry point
-│   ├── __init__.py
-│   └── shared/                     ← shared utilities (suite-only)
-│       ├── transfer_functions.py   ← apply_transfer_function, apply_position_update
-│       ├── binary_encoding.py      ← decode_binary_10bit
-│       ├── migration.py            ← ring_migrate (generic ring migration)
-│       ├── metrics.py              ← MetricsEvaluator (AUC, convergence report)
-│       └── visualization.py        ← plot_results, plot_tf_comparison
-│
-├── iga_core/                       ← IGA structural analysis + optimization (Python + Rust)
-│   ├── pyproject.toml
-│   ├── Cargo.toml                  ← Rust extension (iga_rust via PyO3)
-│   ├── README.md
-│   └── iga_core/
-│       ├── geometry.py             ← NURBS geometry (IGAGeometry)
-│       ├── physics.py              ← SIMP + Von Mises (StructuralKernel)
-│       ├── solver.py               ← static, modal, Bloch (IGASolver)
-│       ├── boundary.py             ← BCs and load cases
-│       ├── domain.py               ← design representation (StructuralDesign)
-│       ├── optimization.py         ← MpGA, MS-MPMBPSO, Hybrid (IGAOptimizer)
-│       ├── config.py               ← hyperparameters (IGAConfig)
-│       ├── visualizer.py           ← plots (IGAViz)
-│       ├── study.py                ← Optuna hyperparameter search
-│       ├── experiments.py          ← curated thesis experiment runners
-│       └── main.py                 ← CLI: `iga-run --example <name>`
-│
-├── mpmbso/                         ← MPMBPSO (Multi-Population Modified Binary PSO)
-│   ├── pyproject.toml
-│   ├── README.md
-│   └── mpmbso/
-│       ├── config.py               ← MPMBPSOConfig
-│       ├── domain.py               ← Particle
-│       ├── benchmarks.py           ← Sphere, Rastrigin, Rosenbrock + Environments
-│       ├── engine.py               ← MPMBPSOAlgorithm (island model)
-│       ├── metrics.py              ← MPMBPSOMetricsEvaluator
-│       ├── visualization.py        ← convergence + TF comparison plots
-│       ├── study.py                ← Optuna hyperparameter search
-│       └── main.py                 ← runs all scenarios
-│
-├── mpga/                           ← MPGA (Multi-Population Genetic Algorithm)
-│   ├── pyproject.toml
-│   ├── README.md
-│   └── mpga/
-│       ├── config.py               ← MPGAConfig
-│       ├── domain.py               ← Individual + parental age mutations
-│       ├── benchmarks.py           ← Sphere, Rastrigin, Rosenbrock + Environments
-│       ├── engine.py               ← MPGAAlgorithm (island ring migration)
-│       ├── metrics.py              ← convergence metrics
-│       ├── visualization.py        ← convergence plots
-│       ├── study.py                ← Optuna hyperparameter search
-│       └── main.py                 ← runs all scenarios
-│
-├── mpbfa/                          ← MPBFA (Multi-Population Binary Firefly Algorithm)
-│   ├── pyproject.toml
-│   ├── README.md
-│   └── mpbfa/
-│       ├── config.py               ← MPBFAConfig
-│       ├── domain.py               ← Firefly
-│       ├── benchmarks.py           ← benchmarks + Environments
-│       ├── engine.py               ← MPBFAAlgorithm
-│       ├── metrics.py              ← convergence metrics
-│       ├── visualization.py        ← plots
-│       ├── study.py                ← Optuna study
-│       └── main.py                 ← runs scenarios
-│
-├── mpbgwo/                         ← MPBGWO (Multi-Population Binary Grey Wolf Optimizer)
-│   ├── pyproject.toml
-│   ├── README.md
-│   └── mpbgwo/
-│       ├── config.py               ← MPBGWOConfig
-│       ├── domain.py               ← Wolf
-│       ├── benchmarks.py           ← benchmarks + Environments
-│       ├── engine.py               ← MPBGWOAlgorithm
-│       ├── metrics.py              ← convergence metrics
-│       ├── visualization.py        ← plots
-│       ├── study.py                ← Optuna study
-│       └── main.py                 ← runs scenarios
-│
-└── mpbba/                          ← MPBBA (Multi-Population Binary Bat Algorithm)
-    ├── pyproject.toml
-    ├── README.md
-    └── mpbba/
-        ├── config.py               ← MPBBAConfig
-        ├── domain.py               ← Bat
-        ├── benchmarks.py           ← benchmarks + Environments
-        ├── engine.py               ← MPBBAAlgorithm
-        ├── metrics.py              ← convergence metrics
-        ├── visualization.py        ← plots
-        ├── study.py                ← Optuna study
-        └── main.py                 ← runs scenarios
+# 6. Exportadores CAD (DXF 2D y SVG Vectorial)
+python -m bioiga.cli export-dxf proyecto.json --out modelo.dxf
+python -m bioiga.cli export-svg proyecto.json --out modelo.svg
 ```
 
 ---
 
-## What Each Package Does
-
-### `iga_core` — IGA Structural Analysis & Optimization
-
-The core library. Combines **Isogeometric Analysis (IGA)** — a mesh-free method using NURBS — with multi-strategy evolutionary structural optimization. Includes a native **Rust extension** (`iga_rust`) for high-performance element assembly (up to **35×** faster than pure Python).
-
-Key capabilities:
-- Exact NURBS geometry (no mesh discretization error for curved boundaries)
-- Static analysis, modal frequencies, Bloch dispersion for phononic crystals
-- SIMP topology, shape, and sizing optimization
-- MpGA (4-island genetic algorithm) and MS-MPMBPSO for bandgap maximization
-- Von Mises stress constraints with Strategy 1 / Strategy 2 penalization
-- Heterogeneous island co-evolution (S1+S2 alternating fitness)
-
-**CLI:**
-```bash
-iga-run --example thesis --elements 16
-iga-run --example thesis_v2_het --elements 32 --refine
-```
-
-→ See [`iga_core/README.md`](iga_core/README.md) for full documentation.
-
----
-
-### `mpmbso` — Multi-Population Modified Binary PSO
-
-Implements **MPMBPSO** — a multi-island Binary PSO with the V-shape transfer function $T(v) = \vert\tanh(v)\vert$. Supports `num_islands` parallel swarms with ring migration, and degrades to a single-swarm PSO when `num_islands=1`.
-
-**Quick use:**
-```python
-from mpmbso.config import MPMBPSOConfig
-from mpmbso.benchmarks import SphereTraditional
-from mpmbso.engine import MPMBPSOAlgorithm
-
-# Multi-population (4 islands)
-config = MPMBPSOConfig(num_islands=4, transfer_function="v_shape", generations=250)
-algo = MPMBPSOAlgorithm(config, SphereTraditional(config))
-history = algo.run()
-
-# Single-population mode (num_islands=1 → plain MBPSO, no migration)
-config_single = MPMBPSOConfig(num_islands=1, transfer_function="v_shape", generations=250)
-```
-
-→ See [`mpmbso/README.md`](mpmbso/README.md) for full documentation.
-
----
-
-### `mpga` — Multi-Population Genetic Algorithm
-
-Implements a **MPGA** with ring migration, tournament selection, single-point crossover, and three mortality modules (age-based, environmental culling, parental age mutation effect). Supports `num_islands=1` for single-population mode.
-
-**Quick use:**
-```python
-from mpga import MPGAConfig, MPGAAlgorithm, SphereMutationAccumulation
-
-config = MPGAConfig(num_islands=4, generations=250, asteroid_gen=150)
-ga = MPGAAlgorithm(config, SphereMutationAccumulation(config))
-history = ga.run()
-```
-
-→ See [`mpga/README.md`](mpga/README.md) for full documentation.
-
----
-
-### `mpbfa`, `mpbgwo`, `mpbba` — Multi-Population Binary Optimizers
-
-These tools implement the **Binary Firefly Algorithm (MPBFA)**, **Binary Grey Wolf Optimizer (MPBGWO)**, and **Binary Bat Algorithm (MPBBA)** with matching island co-evolution, S/V/U/Z transfer functions, and structural parity features. All support `num_islands=1` for single-population mode.
-
-**Quick use (MPBBA example):**
-```python
-from mpbba.config import MPBBAConfig
-from mpbba.benchmarks import SphereTraditional
-from mpbba.engine import MPBBAAlgorithm
-
-config = MPBBAConfig(num_islands=4, transfer_function="z_shape", generations=250)
-algo = MPBBAAlgorithm(config, SphereTraditional(config))
-history = algo.run()
-```
-
----
-
-## Shared Utilities (`bioiga.shared`)
-
-All metaheuristic packages use common utilities from the `bioiga.shared` module:
-
-```python
-from bioiga.shared import apply_transfer_function  # S/V/U/Z transfer functions
-from bioiga.shared import decode_binary_10bit       # Binary → continuous decoding
-from bioiga.shared import ring_migrate              # Generic ring migration
-from bioiga.shared import calculate_auc             # Convergence AUC metric
-from bioiga.shared import plot_results              # Convergence plots
-```
-
----
-
-## Running Tests
+## 4. Instalación, Verificación y Despliegue
 
 ```bash
-# From the monorepo root — run all tests at once
-python -m pytest
+# Suite Completa de Pruebas Unitarias y Ecuaciones (47/47 Aprobadas en ~1.1s)
+python -m pytest iga_core/tests/ bioiga/tests/ -v
+
+# Compilación Frontend Vite
+cd frontend && npm run build
+
+# Opción 1: Despliegue con Docker (Producción)
+docker compose up --build
+
+# Opción 2: Despliegue Local (Desarrollo)
+python -m uvicorn bioiga.api.server:app --port 8000
+cd frontend && npm run dev
 ```
-
-Or per package:
-
-```bash
-python -m pytest mpmbso/
-python -m pytest mpga/
-python -m pytest mpbfa/
-python -m pytest mpbgwo/
-python -m pytest mpbba/
-python -m pytest iga_core/
-```
-
----
-
-## Development Notes
-
-- **Python**: 3.12+ (tested on 3.14)
-- **Local Development Install**: Clone this repository, and from the root, install in editable mode:
-  ```bash
-  pip install -e .
-  ```
-- **`bioiga.egg-info/`**: Auto-generated by `pip install -e .` — safe to ignore/gitignore
-- **`iga_core` Rust extension**: Pre-compiled `.pyd` included for Windows CPython 3.14. For other platforms, install [Maturin](https://maturin.rs) and run `maturin develop --release` inside `iga_core/`
-- **Tests**: Configured with `--import-mode=importlib` in `pyproject.toml`
-
----
-
-## Scientific Background
-
-This suite implements algorithms and experiments from:
-
-> **R. Inostroza Azócar** — *"Optimización de bandgap en metamateriales acústicos mediante Análisis Isogeométrico y algoritmos evolutivos"*, M.Sc. Thesis, Universidad de Chile, 2022.
-
-The longevity bottleneck model in all metaheuristic packages is based on:
-
-> **J. P. de Magalhães** — *"The longevity bottleneck hypothesis: could dinosaurs have shaped ageing in present-day mammals?"*, Functional Ecology, 2024.

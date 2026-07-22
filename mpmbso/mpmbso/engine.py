@@ -37,6 +37,7 @@ shapes (S, V, U, Z) and their update rules.
 
 import numpy as np
 
+from bioiga.shared.callbacks import CallbackType, GenerationEvent
 from bioiga.shared.migration import ring_migrate
 from bioiga.shared.transfer_functions import apply_position_update, apply_transfer_function
 
@@ -150,9 +151,14 @@ class MPMBPSOAlgorithm:
     # PUBLIC RUN METHOD
     # ------------------------------------------------------------------
 
-    def run(self) -> dict[str, list[float]]:
+    def run(self, callback: CallbackType = None) -> dict[str, list[float]]:
         """
         Execute the full MPMBPSO optimization run.
+
+        Parameters
+        ----------
+        callback : CallbackType, optional
+            Optional progress callback function invoked after each generation.
 
         Returns
         -------
@@ -197,6 +203,19 @@ class MPMBPSOAlgorithm:
             self.history["best_fitness"].append(-best.fitness)  # positive error
             self.history["youth_error"].append(best.youth_error)
             self.history["late_error"].append(best.late_error)
+
+            if callback is not None:
+                event = GenerationEvent(
+                    generation=gen,
+                    max_generations=self.config.generations,
+                    best_fitness=float(-best.fitness),
+                    best_solution=np.copy(best.position),
+                    metrics={
+                        "youth_error": float(best.youth_error),
+                        "late_error": float(best.late_error),
+                    },
+                )
+                callback(event)
 
             # Environmental culling per island (parity feature)
             if self.config.use_environmental_culling:

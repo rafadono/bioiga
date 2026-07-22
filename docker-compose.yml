@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bioiga_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./.bioiga_projects:/app/.bioiga_projects
+      - ./.bioiga_materials:/app/.bioiga_materials
+    restart: unless-stopped

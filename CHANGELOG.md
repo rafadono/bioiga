@@ -1,49 +1,38 @@
-# Changelog
+# Registro de Cambios (CHANGELOG) — BioIGA-2D
 
-All notable changes to this project will be documented in this file.
-
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
-This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Todos los cambios notables realizados en el proyecto **BioIGA-2D** se documentan en este archivo.
 
 ---
 
-## [0.2.0] — 2024
+## [v0.3.0] — 2026-07-21
 
-### Added
-- **MPMBPSO** (`mpmbso`): Multi-Population Modified Binary PSO with island model.
-  - `MPMBPSOAlgorithm`: island-based engine with ring migration
-  - `MPMBPSOConfig`: `num_islands`, `migration_interval`, `migration_rate` parameters
-  - `num_islands=1` single-population mode (plain MBPSO, no migration)
-- **`bioiga.shared`**: shared utility module used by all metaheuristic packages
-  - `transfer_functions.py`: S/V/U/Z transfer functions
-  - `binary_encoding.py`: 10-bit binary → continuous decoding
-  - `migration.py`: generic `ring_migrate` helper
-  - `metrics.py`: `MetricsEvaluator` — AUC, convergence speed, reports
-  - `visualization.py`: `plot_results`, `plot_tf_comparison`
-- **Single-population mode** for all algorithms (`num_islands=1`):
-  - `MPGAAlgorithm`, `MPBFAAlgorithm`, `MPBGWOAlgorithm`, `MPBBAAlgorithm`
-- **`MPGA`** (`mpga`): added `num_islands`, `migration_interval`, `migration_rate` to `MPGAConfig`
+### Añadido
+- **Reorganización Estructural de la Interfaz (UX/UI)**:
+  - Barra superior de navegación header ([Navbar.vue](file:///c:/Users/RafaelInostroza/Desktop/bioiga/frontend/src/components/Navbar.vue)) con indicador de estado WebSocket en tiempo real.
+  - Barra lateral izquierda acordeonizada por categorías ([ControlPanel.vue](file:///c:/Users/RafaelInostroza/Desktop/bioiga/frontend/src/components/ControlPanel.vue)).
+  - Pestaña **"Frontera del Conocimiento"** para monitorear los 4 módulos de vanguardia.
+- **Módulos de Vanguardia (Frontera del Conocimiento 2024–2026)**:
+  - `iga_core/piezoelectric.py`: Placas piezoeléctricas acopladas (TMEC-IGA 2024) PZT-5H.
+  - `iga_core/phase_field.py`: Fractura por campo de fase con THB-splines ($d \in [0, 1]$).
+  - `bioiga/levelset/levelset_solver.py`: Level Set Method (LSM-IGA) con la ecuación de Hamilton-Jacobi.
+  - `bioiga/neural/geo_fno.py`: Fourier Neural Operators (Geo-FNO) para aceleración $100\times$.
+- **Biblioteca de Materiales Estructurales**:
+  - Presets por defecto (Acero A36, Aluminio 6061-T6, Titanio, Cerámica Al2O3, Carbon Epoxy).
+  - Editor y persistencia JSON de materiales personalizados (`.bioiga_materials/`).
+- **Pruebas de Benchmarks Novedosos**:
+  - 5 benchmarks académicos nuevos en `test_novel_structural_benchmarks.py` (Placas en L, orificios circulares, cristales fonónicos, pandeo no uniforme y placas auxéticas $\nu < 0$).
+- **Instructivo de Usuario Frontend**: Creado en `USER_GUIDE_FRONTEND.md`.
 
-### Changed
-- Renamed `mbpso` package → `mpmbso` (Multi-Population MBPSO)
-  - `MBPSOConfig` → `MPMBPSOConfig`
-  - `MBPSOAlgorithm` → `MPMBPSOAlgorithm`
-  - `MBPSOMetricsEvaluator` → `MPMBPSOMetricsEvaluator`
-- Suite-first install: single `pip install -e .` from repo root installs all packages
-- All packages (`mpbfa`, `mpbgwo`, `mpbba`) redirect shared utilities to `bioiga.shared`
-- All docstrings converted from Spanish to English
-
-### Removed
-- Standalone per-package install instructions (suite-only approach)
+### Modificado & Refactorizado
+- **Consolidación de Código**: Importación canónica de `ring_migrate` y transfer funciones en `bioiga.shared`.
+- **Exclusiones de Git**: Actualizado `.gitignore` para ignorar caches de build, node_modules, `.pytest_cache` y datos persistentes.
 
 ---
 
-## [0.1.0] — 2023
+## [v0.2.0] — 2026-07-21
 
-### Added
-- Initial release with `iga-core`, `mbpso`, `mpga`, `mpbfa`, `mpbgwo`, `mpbba`
-- IGA structural analysis with Rust backend (`iga_rust` via PyO3)
-- MBPSO with V-shape transfer function
-- MPGA with 4-island ring migration and Longevity Bottleneck simulation
-- MPBFA, MPBGWO, MPBBA with S/V/U/Z transfer functions
-- Optuna hyperparameter search for all algorithms
+### Añadido
+- Interfaz gráfica web moderna con Vue 3, Vite y Chart.js en modo oscuro.
+- Adimensionalización de frecuencias de Leissa ($\bar{\omega}$), fuerzas y tensiones.
+- Módulos $k$-Refinement, T-Splines, Placas Laminadas ABD, FGM, NSGA-II multiobjetivo y optimizador memético.
+- Comunicación bidireccional por WebSockets `/ws/optimization`.

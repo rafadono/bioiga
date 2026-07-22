@@ -1,23 +1,17 @@
 import numpy as np
 
+from iga_core import iga_rust
+
 
 class NURBSCore:
     @staticmethod
-    def basis_functions(i, p, u, knot_vector):
-        N = np.zeros(p + 1)
-        left = np.zeros(p + 1)
-        right = np.zeros(p + 1)
-        N[0] = 1.0
-        for j in range(1, p + 1):
-            left[j] = u - knot_vector[i + 1 - j]
-            right[j] = knot_vector[i + j] - u
-            saved = 0.0
-            for r in range(j):
-                temp = N[r] / (right[r + 1] + left[j - r])
-                N[r] = saved + right[r + 1] * temp
-                saved = left[j - r] * temp
-            N[j] = saved
-        return N
+    def basis_functions(
+        i: int, p: int, u: float, knot_vector: list[float] | np.ndarray
+    ) -> np.ndarray:
+        """Evaluación acelerada en Rust (Cox-de Boor)."""
+        return np.array(
+            iga_rust.nurbs_basis_eval_rust(i, p, float(u), [float(k) for k in knot_vector])
+        )
 
 
 class IGAGeometry:
