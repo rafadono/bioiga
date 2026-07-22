@@ -163,12 +163,15 @@ omit = [
     "*/main.py",        # CLI entry points — tested manually
     "*/study.py",       # Optuna studies — require long runtimes
     "*/analysis.py",
+    "*/experiments.py", # Multi-run experiment scripts
+    "*/optimization.py",# Multi-run optimization scripts
 ]
 
 [tool.coverage.report]
 show_missing = true
 skip_covered = false
-fail_under = 35         # CI threshold for unit test suite coverage
+fail_under = 60         # Strict 60%+ coverage requirement
+
 exclude_lines = [
     "pragma: no cover",
     "if __name__ == .__main__.:",
