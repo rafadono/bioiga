@@ -66,8 +66,8 @@ class NSGA2Algorithm:
         return fronts[:-1]
 
     def _dominates(self, p: IndividualMO, q: IndividualMO) -> bool:
-        better_or_equal = all(x <= y for x, y in zip(p.objectives, q.objectives))
-        strictly_better = any(x < y for x, y in zip(p.objectives, q.objectives))
+        better_or_equal = all(x <= y for x, y in zip(p.objectives, q.objectives, strict=False))
+        strictly_better = any(x < y for x, y in zip(p.objectives, q.objectives, strict=False))
         return better_or_equal and strictly_better
 
     def calculate_crowding_distance(self, front: list[IndividualMO]) -> None:

@@ -1,13 +1,26 @@
 import asyncio
+import os
 from contextlib import asynccontextmanager
 from typing import Any
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, File, HTTPException, UploadFile, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from bioiga.api.projects import delete_project, list_projects, load_project, save_project
 from bioiga.api.schemas import OptimizationConfigSchema, ProjectSchema, SimulationStateSchema
 from bioiga.api.worker import worker_instance
+from bioiga.shared.dxf_io import (
+    DXFValidationError,
+    export_nurbs_to_dxf,
+    export_nurbs_to_svg,
+    parse_dxf_content_to_nurbs,
+)
+from bioiga.shared.materials import (
+    delete_custom_material,
+    get_all_materials,
+    save_custom_material,
+)
 from bioiga.shared.rust_builder import ensure_rust_extension_compiled
 
 
@@ -52,94 +65,63 @@ def get_status() -> dict[str, Any]:
     }
 
 
-from bioiga.shared.materials import (
-    delete_custom_material,
-    get_all_materials,
-    save_custom_material,
-)
-
-
 @app.get("/api/materials")
 def list_materials() -> dict[str, Any]:
     return {"materials": get_all_materials()}
 
 
 @app.post("/api/materials")
-def save_material(mat_dict: dict[str, Any]) -> dict[str, str]:
-    save_custom_material(mat_dict)
-    return {"message": f"Material '{mat_dict.get('name')}' saved successfully."}
+def save_material_endpoint(material: dict[str, Any]) -> dict[str, Any]:
+    save_custom_material(material)
+    return {"message": f"Material '{material.get('name')}' guardado con éxito."}
 
 
-@app.delete("/api/materials/{name}")
-def delete_material(name: str) -> dict[str, str]:
-    if delete_custom_material(name):
-        return {"message": f"Material '{name}' deleted."}
-    return {"error": f"Material '{name}' not found."}
-
-
-@app.post("/api/projects")
-def create_or_update_project(project: ProjectSchema) -> dict[str, str]:
-    save_project(project)
-    return {"message": f"Project '{project.name}' saved successfully."}
+@app.delete("/api/materials/{mat_id}")
+def delete_material_endpoint(mat_id: str) -> dict[str, Any]:
+    delete_custom_material(mat_id)
+    return {"message": f"Material '{mat_id}' eliminado."}
 
 
 @app.get("/api/projects")
-def get_project_list() -> dict[str, Any]:
+def list_projects_endpoint() -> dict[str, Any]:
     return {"projects": list_projects()}
 
 
-@app.get("/api/projects/{name}")
-def get_project_by_name(name: str) -> dict[str, Any]:
-    proj = load_project(name)
-    if proj:
-        return {"project": proj.model_dump()}
-    return {"error": f"Project '{name}' not found."}
+@app.post("/api/projects/save")
+def save_project_endpoint(project: ProjectSchema) -> dict[str, Any]:
+    save_project(project.model_dump())
+    return {"message": f"Proyecto '{project.name}' guardado."}
 
 
-@app.delete("/api/projects/{name}")
-def delete_project_by_name(name: str) -> dict[str, str]:
-    if delete_project(name):
-        return {"message": f"Project '{name}' deleted."}
-    return {"error": f"Project '{name}' not found."}
+@app.get("/api/projects/load/{filename}")
+def load_project_endpoint(filename: str) -> dict[str, Any]:
+    pdata = load_project(filename)
+    if not pdata:
+        raise HTTPException(status_code=404, detail="Proyecto no encontrado.")
+    return {"project": pdata.model_dump()}
 
 
+@app.delete("/api/projects/delete/{filename}")
+def delete_project_endpoint(filename: str) -> dict[str, Any]:
+    delete_project(filename)
+    return {"message": f"Proyecto '{filename}' eliminado."}
+
+
+@app.post("/api/optimization/start")
 @app.post("/api/run")
-def start_simulation(config: OptimizationConfigSchema) -> dict[str, str]:
-    success = worker_instance.start_task(config.model_dump())
-    if success:
-        return {"message": "Simulation started successfully."}
-    return {"error": "Simulation is already running."}
+def start_optimization(config: OptimizationConfigSchema) -> dict[str, Any]:
+    if worker_instance.start_task(config.model_dump()):
+        return {"message": "Optimización iniciada exitosamente."}
+    return {"error": "Una simulación ya está en curso."}
 
 
-@app.post("/api/pause")
-def pause_simulation() -> dict[str, str]:
-    if worker_instance.pause_task():
-        return {"message": "Simulation paused."}
-    return {"error": "Simulation cannot be paused."}
-
-
-@app.post("/api/resume")
-def resume_simulation() -> dict[str, str]:
-    if worker_instance.resume_task():
-        return {"message": "Simulation resumed."}
-    return {"error": "Simulation cannot be resumed."}
-
-
+@app.post("/api/optimization/stop")
 @app.post("/api/stop")
-def stop_simulation() -> dict[str, str]:
+def stop_optimization() -> dict[str, Any]:
     if worker_instance.stop_task():
         return {"message": "Simulation stopped."}
     return {"error": "Simulation is not active."}
 
-
-from fastapi import File, HTTPException, UploadFile
-
-from bioiga.shared.dxf_io import (
-    DXFValidationError,
-    export_nurbs_to_dxf,
-    export_nurbs_to_svg,
-    parse_dxf_content_to_nurbs,
-)
 
 
 @app.post("/api/geometry/import-dxf")
@@ -150,9 +132,9 @@ async def import_dxf_file(file: UploadFile = File(...)) -> dict[str, Any]:
         parsed_nurbs = parse_dxf_content_to_nurbs(dxf_text)
         return {"message": "DXF 2D importado con éxito.", "geometry": parsed_nurbs}
     except DXFValidationError as ve:
-        raise HTTPException(status_code=400, detail=str(ve))
+        raise HTTPException(status_code=400, detail=str(ve)) from ve
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error parseando DXF: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error parseando DXF: {str(e)}") from e
 
 
 @app.post("/api/geometry/export-dxf")
@@ -190,10 +172,6 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
 
 
 # Serve compiled Vue 3 Frontend static files from frontend/dist
-import os
-
-from fastapi.staticfiles import StaticFiles
-
 frontend_dist = os.path.join(
     os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "frontend", "dist"
 )

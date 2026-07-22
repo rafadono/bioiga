@@ -109,7 +109,7 @@ class FGMPlate:
         z_quad, weights = np.polynomial.legendre.leggauss(10)
         z_real = (self.h / 2.0) * z_quad
         D_eq = 0.0
-        for z, w in zip(z_real, weights):
+        for z, w in zip(z_real, weights, strict=False):
             E_z, _ = self.evaluate_properties_at_z(z)
             D_eq += E_z * (z**2) * w * (self.h / 2.0)
         return D_eq

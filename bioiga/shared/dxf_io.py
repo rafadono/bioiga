@@ -54,7 +54,6 @@ def parse_dxf_content_to_nurbs(dxf_text: str) -> dict[str, Any]:
     current_entity = ""
     current_x: float | None = None
     current_y: float | None = None
-    current_z: float = 0.0
 
     circle_center: list[float] = [0.0, 0.0]
     circle_radius: float = 0.0
