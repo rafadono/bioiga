@@ -18,4 +18,4 @@ class ProgressCallback(Protocol):
     def __call__(self, event: GenerationEvent) -> None: ...
 
 
-CallbackType = Optional[Callable[[GenerationEvent], None]]
+CallbackType = Callable[[GenerationEvent], None] | None

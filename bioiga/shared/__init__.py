@@ -65,6 +65,11 @@ __all__ = [
     "generate_report",
     "plot_results",
     "plot_tf_comparison",
+    "DEFAULT_MATERIALS",
+    "MaterialProperties",
+    "delete_custom_material",
+    "get_all_materials",
+    "save_custom_material",
     # Benchmarks
     "MathProblem",
     "Sphere",

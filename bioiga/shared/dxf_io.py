@@ -80,7 +80,8 @@ def parse_dxf_content_to_nurbs(dxf_text: str) -> dict[str, Any]:
                     (cx + r, cy + r),
                 ]
             current_entity = val
-            current_x, current_y, current_z = None, None, 0.0
+            current_x, current_y = None, None
+
             continue
 
         if current_entity in ("LWPOLYLINE", "VERTEX", "POINT", "LINE"):
@@ -88,8 +89,6 @@ def parse_dxf_content_to_nurbs(dxf_text: str) -> dict[str, Any]:
                 current_x = float(val)
             elif code in ("20", "21"):
                 current_y = float(val)
-            elif code in ("30", "31"):
-                current_z = float(val)
 
             if current_x is not None and current_y is not None:
                 extracted_points.append((current_x, current_y))

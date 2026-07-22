@@ -23,10 +23,12 @@ def ensure_rust_extension_compiled() -> bool:
 
     # Si requiere compilación, invocar cargo build --release
     try:
-        iga_core_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "iga_core"))
+        iga_core_dir = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "..", "..", "iga_core")
+        )
         target_dll = os.path.join(iga_core_dir, "target", "release", "iga_rust.dll")
         pyd_destination = os.path.join(iga_core_dir, "iga_core", "iga_rust.pyd")
-        
+
         subprocess.run(
             ["cargo", "build", "--release"],
             cwd=iga_core_dir,
@@ -42,4 +44,3 @@ def ensure_rust_extension_compiled() -> bool:
         print(f"[WARN] No se pudo compilar Rust automáticamente: {e}")
 
     return False
-

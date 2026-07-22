@@ -35,9 +35,6 @@ class OrthotropicLayer:
         )
 
 
-import iga_rust
-
-
 class LaminatedCompositePlate:
     """
     Teoria de Deformacion por Corte de Primer Orden (FSDT / Mindlin) para Placas Laminadas.
@@ -54,7 +51,8 @@ class LaminatedCompositePlate:
             return np.zeros((3, 3)), np.zeros((3, 3)), np.zeros((3, 3))
 
         layer0 = self.layers[0]
-        angles = [l.angle_deg for l in self.layers]
+        angles = [layer.angle_deg for layer in self.layers]
+
         a_flat, b_flat, d_flat = iga_rust.laminate_abd_integration_rust(
             len(self.layers),
             self.total_thickness,

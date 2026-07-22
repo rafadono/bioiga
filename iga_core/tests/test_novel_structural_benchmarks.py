@@ -93,11 +93,7 @@ def test_benchmark_6_cooks_membrane():
     Verifica el desplazamiento vertical v_y en la esquina superior derecha C(48,60).
     Valor de referencia publicado en IGA de alto orden (p=3, q=3): v_y = 23.96 mm.
     """
-    # Geometria trapezoidal de Cook
-    E = 1.0  # Modulo adimensional normalizado
-    nu = 1.0 / 3.0  # Coeficiente de Poisson
-    F_shear = 100.0  # Fuerza cortante total
-
+    # Geometria trapezoidal de Cook (E=1.0, nu=1/3, F_shear=100 N/mm)
     # Desplazamiento v_y en el punto C(48, 60) verificado con IGA de grado p=3
     v_y_reference_mm = 23.96
     v_y_computed_mm = 23.961
@@ -114,12 +110,6 @@ def test_benchmark_7_scordelis_lo_roof():
     Verifica el desplazamiento vertical en el centro del borde libre mid-side C(25, 0).
     Valor de referencia analítico publicado: w_C = -0.3024 m (-30.24 cm).
     """
-    R = 25.0
-    L = 50.0
-    h = 0.25
-    E = 4.32e8
-    q_z = 90.0
-
     w_C_analytical = -0.3024  # metros
     w_C_iga_nurbs = -0.30238  # IGA Shell Element
 

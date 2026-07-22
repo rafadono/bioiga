@@ -281,7 +281,7 @@ def cmd_sweep(
                 E1=181e9, E2=10.3e9, G12=7.17e9, nu12=0.28, thickness=0.01 / max(1, l_count)
             )
             laminate = LaminatedCompositePlate(layers=[layer] * l_count)
-            A, B, D = laminate.A, laminate.B, laminate.D
+            A = laminate.A
             metric_val = float(A[0, 0])
 
         else:
@@ -307,7 +307,7 @@ def cmd_sweep(
 
 def cmd_benchmark_paper(paper_id: int):
     print(f"[CLI] Lanzando Benchmark Académico Publicado #{paper_id}...")
-    from tests.test_novel_structural_benchmarks import (
+    from iga_core.tests.test_novel_structural_benchmarks import (
         test_benchmark_1_l_shaped_plate_singularities,
         test_benchmark_2_perforated_plate_hole_ratio,
         test_benchmark_3_phononic_crystal_bandgap,
@@ -318,7 +318,7 @@ def cmd_benchmark_paper(paper_id: int):
         test_benchmark_8_trimmed_cutfem_double_cutouts,
         test_benchmark_9_chiral_auxetic_reentrant_lattice,
     )
-    from tests.test_roadmap_frontier import (
+    from iga_core.tests.test_roadmap_frontier import (
         test_roadmap_1_piezoelectric_energy_harvester_voltage,
         test_roadmap_2_phase_field_microcrack_evolution,
         test_roadmap_3_levelset_hamilton_jacobi_topology,

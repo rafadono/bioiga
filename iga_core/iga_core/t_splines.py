@@ -36,8 +36,8 @@ class TMesh:
         v_vals = np.linspace(0.0, 1.0, num_v)
 
         node_id = 0
-        for i, u in enumerate(u_vals):
-            for j, v in enumerate(v_vals):
+        for u in u_vals:
+            for v in v_vals:
                 k_u = np.array([max(0.0, u - 0.2), u, min(1.0, u + 0.2)])
                 k_v = np.array([max(0.0, v - 0.2), v, min(1.0, v + 0.2)])
                 self.nodes.append(

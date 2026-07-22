@@ -39,8 +39,8 @@ class PiezoelectricPlate:
 
     def _build_constitutive_matrices(self) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         # Matriz de rigidez elastica C^E (3x3 en tension plana)
-        denom = self.mat.c11**2 - self.mat.c12**2
         Q11 = (self.mat.c11 * self.mat.c33 - self.mat.c12**2) / self.mat.c11
+
         Q12 = self.mat.c12 * (self.mat.c33 - self.mat.c12) / self.mat.c11
         Q66 = self.mat.c44
 
