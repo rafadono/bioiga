@@ -61,8 +61,12 @@ figures/
 *.plots/
 
 
-# IDE & OS
+# IDE, AI Tools & OS
 .vscode/
 .idea/
+.codegraph/
+.gemini/
+.agents/
 .DS_Store
 Thumbs.db
+
