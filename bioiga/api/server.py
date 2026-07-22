@@ -123,7 +123,6 @@ def stop_optimization() -> dict[str, Any]:
     return {"error": "Simulation is not active."}
 
 
-
 @app.post("/api/geometry/import-dxf")
 async def import_dxf_file(file: UploadFile = File(...)) -> dict[str, Any]:
     content = await file.read()
