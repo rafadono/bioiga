@@ -41,7 +41,9 @@ dependencies = [
     "websockets>=12.0",
     "pydantic>=2.0.0",
     "ezdxf>=1.1.0",
+    "python-multipart>=0.0.9",
 ]
+
 
 
 [project.scripts]
@@ -77,6 +79,7 @@ Changelog     = "https://github.com/rafaelinostroza/bioiga/blob/main/CHANGELOG.m
 packages = [
     "bioiga",
     "bioiga.shared",
+    "iga_core",
     "mpmbso",
     "mpga",
     "mpbfa",
@@ -85,12 +88,14 @@ packages = [
 ]
 
 [tool.setuptools.package-dir]
-""       = "."           # bioiga lives at ./bioiga/
-"mpmbso" = "mpmbso/mpmbso"
-"mpga"   = "mpga/mpga"
-"mpbfa"  = "mpbfa/mpbfa"
-"mpbgwo" = "mpbgwo/mpbgwo"
-"mpbba"  = "mpbba/mpbba"
+""         = "."           # bioiga lives at ./bioiga/
+"iga_core" = "iga_core/iga_core"
+"mpmbso"   = "mpmbso/mpmbso"
+"mpga"     = "mpga/mpga"
+"mpbfa"    = "mpbfa/mpbfa"
+"mpbgwo"   = "mpbgwo/mpbgwo"
+"mpbba"    = "mpbba/mpbba"
+
 
 [tool.setuptools.package-data]
 "*" = ["py.typed"]       # Include py.typed markers in wheels
