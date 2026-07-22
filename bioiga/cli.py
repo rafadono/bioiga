@@ -21,6 +21,10 @@ IGA_CORE_DIR = os.path.join(PROJECT_ROOT, "iga_core")
 if IGA_CORE_DIR not in sys.path:
     sys.path.insert(0, IGA_CORE_DIR)
 
+IGA_TESTS_DIR = os.path.join(PROJECT_ROOT, "iga_core", "tests")
+if IGA_TESTS_DIR not in sys.path:
+    sys.path.insert(0, IGA_TESTS_DIR)
+
 
 def cmd_info():
     print("=" * 90)
@@ -307,7 +311,7 @@ def cmd_sweep(
 
 def cmd_benchmark_paper(paper_id: int):
     print(f"[CLI] Lanzando Benchmark Académico Publicado #{paper_id}...")
-    from iga_core.tests.test_novel_structural_benchmarks import (
+    from test_novel_structural_benchmarks import (
         test_benchmark_1_l_shaped_plate_singularities,
         test_benchmark_2_perforated_plate_hole_ratio,
         test_benchmark_3_phononic_crystal_bandgap,
@@ -318,7 +322,7 @@ def cmd_benchmark_paper(paper_id: int):
         test_benchmark_8_trimmed_cutfem_double_cutouts,
         test_benchmark_9_chiral_auxetic_reentrant_lattice,
     )
-    from iga_core.tests.test_roadmap_frontier import (
+    from test_roadmap_frontier import (
         test_roadmap_1_piezoelectric_energy_harvester_voltage,
         test_roadmap_2_phase_field_microcrack_evolution,
         test_roadmap_3_levelset_hamilton_jacobi_topology,
