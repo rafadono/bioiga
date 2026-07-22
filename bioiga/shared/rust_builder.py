@@ -6,6 +6,7 @@ Garantiza que la extensión binaria iga_rust esté siempre compilada y actualiza
 import os
 import shutil
 import subprocess
+import sys
 
 
 def ensure_rust_extension_compiled() -> bool:
@@ -21,14 +22,22 @@ def ensure_rust_extension_compiled() -> bool:
     except ImportError:
         pass
 
-    # Si requiere compilación, invocar cargo build --release
+    # Intentar primero maturin develop en iga_core
+    iga_core_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "iga_core"))
     try:
-        iga_core_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..", "..", "iga_core")
+        res = subprocess.run(
+            ["maturin", "develop", "--release"],
+            cwd=iga_core_dir,
+            capture_output=True,
+            text=True,
         )
-        target_dll = os.path.join(iga_core_dir, "target", "release", "iga_rust.dll")
-        pyd_destination = os.path.join(iga_core_dir, "iga_core", "iga_rust.pyd")
+        if res.returncode == 0:
+            return True
+    except Exception:
+        pass
 
+    # Fallback: invocar cargo build --release y copiar librería según plataforma
+    try:
         subprocess.run(
             ["cargo", "build", "--release"],
             cwd=iga_core_dir,
@@ -37,8 +46,26 @@ def ensure_rust_extension_compiled() -> bool:
             text=True,
         )
 
-        if os.path.exists(target_dll):
-            shutil.copy(target_dll, pyd_destination)
+        target_release = os.path.join(iga_core_dir, "target", "release")
+        possible_artifacts = [
+            "iga_rust.dll",
+            "libiga_rust.so",
+            "iga_rust.so",
+            "libiga_rust.dylib",
+            "iga_rust.dylib",
+        ]
+
+        found_artifact = None
+        for name in possible_artifacts:
+            full_path = os.path.join(target_release, name)
+            if os.path.exists(full_path):
+                found_artifact = full_path
+                break
+
+        if found_artifact:
+            ext = ".pyd" if sys.platform == "win32" else ".so"
+            pyd_destination = os.path.join(iga_core_dir, "iga_core", f"iga_rust{ext}")
+            shutil.copy(found_artifact, pyd_destination)
             return True
     except Exception as e:
         print(f"[WARN] No se pudo compilar Rust automáticamente: {e}")
