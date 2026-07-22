@@ -66,7 +66,16 @@ def ensure_rust_extension_compiled() -> bool:
             ext = ".pyd" if sys.platform == "win32" else ".so"
             pyd_destination = os.path.join(iga_core_dir, "iga_core", f"iga_rust{ext}")
             shutil.copy(found_artifact, pyd_destination)
+            try:
+                import importlib
+
+                import iga_core.iga_rust
+
+                importlib.reload(iga_core.iga_rust)
+            except Exception:
+                pass
             return True
+
     except Exception as e:
         print(f"[WARN] No se pudo compilar Rust automáticamente: {e}")
 

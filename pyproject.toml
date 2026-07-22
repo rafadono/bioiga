@@ -52,6 +52,8 @@ bioiga-cli = "bioiga.cli:main"
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    "httpx>=0.25.0",
+    "anyio>=4.0.0",
     "ruff>=0.4.0",
     "mypy>=1.0",
     "pre-commit>=3.0",
@@ -59,6 +61,7 @@ dev = [
     "twine>=5.0",
     "maturin>=1.0",
 ]
+
 
 [project.urls]
 Homepage      = "https://github.com/rafaelinostroza/bioiga"
