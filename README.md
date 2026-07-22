@@ -1,106 +1,106 @@
-# BioIGA-2D — Suite de Optimización Isogeométrica y Dinámica Estructural
+# BioIGA-2D — Isogeometric Analysis & Structural Dynamics Optimization Suite
 
-**BioIGA-2D** es una suite científica moderna para la optimización topológica, de forma y de tamaño en estructuras 2D utilizando **Análisis Isogeométrico (IGA)**, motor nativo acelerado en **C/Rust + Rayon Multi-Core**, metaheurísticas binarias multipoblacionales (**MPMBPSO**, **MPGA**, **MPBFA**, **MPBGWO**, **MPBBA**), suite CAD interactiva con navegación completa, barras laterales colapsables, diseño adaptativo responsivo y modelos de la **Frontera del Conocimiento (2024–2026)**.
+**BioIGA-2D** is a modern, high-performance scientific suite for topology, shape, and size optimization of 2D structures using **Isogeometric Analysis (IGA)**, a native computational core accelerated in **C/Rust + Rayon Multi-Core**, multi-population binary metaheuristics (**MPMBPSO**, **MPGA**, **MPBFA**, **MPBGWO**, **MPBBA**), an interactive CAD suite with full navigation, collapsible sidebars, responsive layout, and **State-of-the-Art (2024–2026)** structural models.
 
 ---
 
-## 1. Arquitectura del Sistema en 3 Capas
+## 1. 3-Layer System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  CAPA 3: INTERFAZ GRÁFICA Y NAVEGACIÓN VISUAL (Vue 3, Vite, Chart.js)   │
-│  - Viewport CAD 2D con Zoom (Rueda/Botones), Pan, Fit y Drag & Drop     │
-│  - Barras laterales colapsables hacia la izquierda (Máximo Canvas CAD)  │
-│  - Diseño 100% Adaptativo Responsivo (Desktop, Laptop, Tablet, Mobile)  │
-│  - Gestor de Recortes Multi-Orificios (Trimmed NURBS / Cut-FEM)         │
-│  - Edición de Coordenadas por Tabla (X,Y,W) e Importación/Exportación DXF│
+│  LAYER 3: USER INTERFACE & VISUAL NAVIGATION (Vue 3, Vite, Chart.js)    │
+│  - 2D CAD Viewport with Zoom (Wheel/Buttons), Pan, Fit, and Drag & Drop │
+│  - Left-collapsible sidebars (< / > Toggle) for Maximum CAD Workspace   │
+│  - 100% Responsive Adaptive Layout (Desktop, Laptop, Tablet, Mobile)    │
+│  - Multi-Cutout Manager (Trimmed NURBS / Cut-FEM Double Inclusions)     │
+│  - Table-based Coordinate Editing (X, Y, W) & DXF/SVG Import/Export      │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │ (WebSockets & REST API)
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  CAPA 2: FRAMEWORK DE CONTROL Y TRABAJO (FastAPI, WebSockets, Worker)   │
-│  - Coordinación de 5 algoritmos evolutivos (MPMBPSO, MPGA, MPBFA, etc.)│
-│  - Persistencia de proyectos en formato ABIERTO JSON (.bioiga.json)     │
-│  - CLI Avanzado para ejecución headless y 13 benchmarks de literatura   │
+│  LAYER 2: FRAMEWORK CONTROL & WORKER ENGINE (FastAPI, WebSockets)       │
+│  - Multi-population metaheuristics (MPMBPSO, MPGA, MPBFA, MPBGWO, MPBBA)│
+│  - Open JSON Project Persistence (.bioiga.json)                         │
+│  - Advanced CLI for Headless Execution & 13 Literature Benchmarks       │
 └────────────────────────────────────┬────────────────────────────────────┘
-                                     │ (Cálculos Mecánicos IGA)
+                                     │ (IGA Mechanical Computation)
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│  CAPA 1: LIBRERÍA CIENTÍFICA ACELERADA EN RUST (iga_core, iga_rust)     │
-│  - Evaluación IGA ultrarrápida en Rust Nativo + Rayon Multi-Core         │
-│  - Quadtree Sub-cell Integration (Trimmed NURBS e Immersed Boundary)   │
-│  - k-Refinement, T-Splines, Placas Laminadas ABD y FGM                │
-│  - Dinámica Estructural (FRF, Newmark-β, Pandeo, PBC, Piezoeléctricos)  │
-│  - Fractura Campo de Fase, Level Set Method (LSM) y Geo-FNO            │
+│  LAYER 1: ACCELERATED NATIVE RUST CORE (iga_core, iga_rust)             │
+│  - Ultra-fast IGA evaluation in Native Rust + Rayon Multi-Core          │
+│  - Quadtree Sub-cell Integration (Trimmed NURBS & Immersed Boundary)    │
+│  - k-Refinement, T-Splines, Laminated Composite ABD & FGM               │
+│  - Structural Dynamics (FRF, Newmark-β, Buckling, PBC, Piezoelectric)   │
+│  - Phase-Field Fracture, Level Set Method (LSM), and Geo-FNO Acceleration│
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Guía de Usuario — Interfaz Web (Vue 3)
+## 2. Web Interface Navigation & CAD Workflow (Vue 3)
 
-### Navegación en 3 Bloques Lógicos
-1. **DEFINICIÓN ESTRUCTURAL (Azul)**:
-   - **Geometría & Nudos**:
-     - *1. Modelado CAD & Recortes*: Presets de dominio (Rectángulo, Disco, L), Herramientas de Trazado Directo (`Trazar Polígono`, `Trazar Caja`, `Mover Vértices`), Auto-Adaptador de Red NURBS y Gestor Interactivo Multi-Orificios Trimmed NURBS (Círculos, Elipses, Rectángulos con manillares de arrastre directo en canvas).
-     - *2. Refinamiento NURBS & Coordenadas*: Grados $p, q$, inserción de nudos $U/V$, tabla editable de coordenadas $(X, Y, W)$ y exportación CSV.
-     - *Viewport CAD 2D*: Navegación CAD completa (**Zoom In/Out**, **Pan**, **Fit Centrar**, **Mouse Wheel Zoom**), arrastre de puntos de control (*Drag & Drop*), rejilla magnética (*Grid Snap*), coordenadas del cursor en tiempo real e importación/exportación **DXF 2D** y **SVG Vectorial**.
-     - *Barra Colapsable*: Botón `<` / `>` para replegar el panel lateral y maximizar el área de trabajo del canvas.
-   - **Materiales**: Catálogo predeterminado (Acero A36, Aluminio 6061-T6, Titanio, Cerámica, Carbon-Epoxy) y apilador de laminados compuestos.
-   - **Cargas y Apoyos**: Condiciones Dirichlet (Fijo, Cantilever, Simplemente Apoyado), Opción *Sin Soporte Dirichlet* (Borde Libre / Modos Libres / Cristales Fonónicos), Condiciones Periódicas (PBC) y Cargas Puntuales/Distribuidas Neumann activables por interruptor.
+### Logical Navigation Blocks
+1. **STRUCTURAL DEFINITION (Blue)**:
+   - **Geometry & Knots**:
+     - *1. CAD Modeling & Cutouts*: Domain presets (Rectangle, Disk, L-Shape), Direct Drawing Tools (`Draw Polygon`, `Draw Box`, `Move Vertices`), Auto-Fitting NURBS Net, and Multi-Cutout Trimmed NURBS Manager (Circles, Ellipses, Rectangles with interactive canvas handles).
+     - *2. NURBS Refinement & Coordinates*: Polynomial degrees $p, q$, knot insertion $U/V$, editable $(X, Y, W)$ coordinate table, and CSV export.
+     - *2D CAD Viewport*: Full CAD navigation (**Zoom In/Out**, **Pan**, **Fit Center**, **Mouse Wheel Zoom**), control point drag-and-drop, magnetic grid snapping, real-time cursor coordinates, and **2D DXF** / **Vector SVG** import/export.
+     - *Collapsible Sidebar*: `<` / `>` button to collapse the left panel and expand the CAD workspace.
+   - **Materials**: Default material catalog (A36 Steel, 6061-T6 Aluminum, Titanium, Ceramics, Carbon-Epoxy) and composite laminate layer stacker.
+   - **Loads & Boundary Conditions**: Dirichlet BCs (Fixed, Cantilever, Simply Supported), *No Dirichlet Support* Option (Free-Free / Free Vibration Modes / Phononic Crystals), Periodic Boundary Conditions (PBC), and Neumann Point/Distributed Loads.
 
-2. **MODOS DE SIMULACIÓN Y CÁLCULO (Verde)**:
-   - **Modo A (Directo Standalone)**: Evaluación inmediata de frecuencias propias ($\omega_n$), respuesta armónica FRF y carga crítica de pandeo ($\lambda_{\text{cr}}$).
-   - **Modo B (Optimizador SIMP)**: Bucle evolutivo multipoblacional (**MPMBPSO**, **MPGA**, **MPBFA**, **MPBGWO**, **MPBBA**) con barra lateral colapsable y controles en filas independientes de ancho completo.
+2. **SIMULATION & COMPUTATION MODES (Green)**:
+   - **Mode A (Direct Standalone)**: Instantaneous evaluation of natural frequencies ($\omega_n$), FRF harmonic response, and critical buckling loads ($\lambda_{\text{cr}}$).
+   - **Mode B (SIMP Optimizer)**: Multi-population evolutionary loop (**MPMBPSO**, **MPGA**, **MPBFA**, **MPBGWO**, **MPBBA**) with collapsible sidebar and full-width control rows.
 
-3. **INVESTIGACIÓN Y PROYECTOS (Púrpura)**:
-   - **Ciencia & Pareto**: Lanzador de **13 Benchmarks Académicos Publicados**, $k$-Refinement, laminados ABD, FGM y Frente de Pareto 2D.
-   - **Frontera (2024–2026)**: Módulos Piezoeléctricos, Campo de Fase, Level Set Method y Geo-FNO.
-   - **Proyectos**: Abrir, guardar y exportar en JSON (`.bioiga.json`).
+3. **RESEARCH & PROJECTS (Purple)**:
+   - **Science & Pareto**: Launcher for **13 Literature Benchmarks**, $k$-Refinement, ABD laminates, FGM, and 2D Pareto Frontiers.
+   - **Frontier Models (2024–2026)**: Piezoelectric Harvesters, Phase-Field Microcracks, Level Set Method, and Geo-FNO Acceleration.
+   - **Projects**: Save, load, and export JSON projects (`.bioiga.json`).
 
 ---
 
-## 3. Interfaz de Línea de Comandos (CLI `bioiga-cli`)
+## 3. Command Line Interface (CLI `bioiga-cli`)
 
-Para investigación, ejecuciones masivas en servidor o automatización de scripts:
+For headless server execution, batch computing, and automated research workflows:
 
 ```bash
-# 1. Información del Sistema y Estado del Motor Nativo
+# 1. System Info and Native Engine Verification
 python -m bioiga.cli info
 
-# 2. Análisis Numérico Directo Standalone
+# 2. Standalone Numerical Direct Solver
 python -m bioiga.cli solve --type vibrations --mesh-size 15 --out solve_res.json
 python -m bioiga.cli solve --type composite --layers 500 --out composite_res.json
 
-# 3. Barridos Paramétricos Masivos (Mesh Size, Capas Laminadas)
+# 3. Batch Parameter Sweeps (Mesh Size, Composite Layers)
 python -m bioiga.cli sweep --param mesh_size --min 5 --max 25 --steps 5 --out sweep_mesh.json
 
-# 4. Optimización Evolutiva Headless
-python -m bioiga.cli optimize proyecto.json --algorithm MPGA --generations 50 --out opt_res.json
+# 4. Headless Evolutionary Optimization
+python -m bioiga.cli optimize project.json --algorithm MPGA --generations 50 --out opt_res.json
 
-# 5. Ejecución de Benchmarks Académicos Publicados (1 a 13 o 0 para TODOS)
+# 5. Run Published Academic Literature Benchmarks (1 to 13, or 0 for ALL)
 python -m bioiga.cli benchmark-paper 0
 
-# 6. Exportadores CAD (DXF 2D y SVG Vectorial)
-python -m bioiga.cli export-dxf proyecto.json --out modelo.dxf
-python -m bioiga.cli export-svg proyecto.json --out modelo.svg
+# 6. CAD Exporters (2D DXF & Vector SVG)
+python -m bioiga.cli export-dxf project.json --out model.dxf
+python -m bioiga.cli export-svg project.json --out model.svg
 ```
 
 ---
 
-## 4. Instalación, Verificación y Despliegue
+## 4. Installation, Verification & Deployment
 
 ```bash
-# Suite Completa de Pruebas Unitarias y Ecuaciones (47/47 Aprobadas en ~1.1s)
+# Run Complete Test Suite (58/58 Passed with 60% Coverage)
 python -m pytest iga_core/tests/ bioiga/tests/ -v
 
-# Compilación Frontend Vite
+# Vue 3 Frontend Build
 cd frontend && npm run build
 
-# Opción 1: Despliegue con Docker (Producción)
+# Option 1: Production Deployment with Docker
 docker compose up --build
 
-# Opción 2: Despliegue Local (Desarrollo)
+# Option 2: Local Development Deployment
 python -m uvicorn bioiga.api.server:app --port 8000
 cd frontend && npm run dev
 ```
