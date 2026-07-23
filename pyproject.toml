@@ -160,12 +160,16 @@ no_implicit_optional = true
 source = ["iga_core", "bioiga", "mpmbso", "mpga", "mpbfa", "mpbgwo", "mpbba"]
 omit = [
     "*/tests/*",
-    "*/main.py",        # CLI entry points — tested manually
-    "*/study.py",       # Optuna studies — require long runtimes
+    "*/main.py",          # CLI entry points — tested via CLI benchmarks
+    "*/cli.py",           # CLI entry points — tested via CLI benchmarks
+    "*/study.py",         # Optuna studies — require long runtimes
     "*/analysis.py",
-    "*/experiments.py", # Multi-run experiment scripts
-    "*/optimization.py",# Multi-run optimization scripts
+    "*/experiments.py",   # Multi-run experiment scripts
+    "*/optimization.py",  # Multi-run optimization scripts
+    "*/visualizer.py",    # Interactive plotting/visualization tools
+    "*/visualization.py", # Interactive plotting/visualization tools
 ]
+
 
 [tool.coverage.report]
 show_missing = true

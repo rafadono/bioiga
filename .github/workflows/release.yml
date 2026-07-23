@@ -69,8 +69,9 @@ jobs:
 
       - name: Run complete test suite and 13 paper benchmarks
         run: |
-          python -m pytest iga_core/tests/ bioiga/tests/ --cov=iga_core --cov=bioiga --cov-report=xml --cov-report=term-missing
+          python -m pytest iga_core/tests/ bioiga/tests/ --cov --cov-report=xml --cov-report=term-missing
           python -m bioiga.cli benchmark-paper 0
+
 
 
       - name: Upload coverage report
